@@ -8,7 +8,7 @@ export default function Task({taskState, taskTag}) {
     <styles.BottomContainer__BlockContainer_SubContainer>
       <styles.BottomContainer__BlockContainer_SubContainer_Box>
         <styles.BottomContainer__BlockContainer_SubContainer_Box_image
-          src={taskState ? "done.svg" : "donegrey.svg"}
+          src={taskState ? "done.svg" : "doneGrey.svg"}
         ></styles.BottomContainer__BlockContainer_SubContainer_Box_image>
         Task 1
       </styles.BottomContainer__BlockContainer_SubContainer_Box>

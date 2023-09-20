@@ -23,7 +23,7 @@ export default function ToDo({}) {
               Today
             </styles.BottomContainer__AsideContainer_Block_active>
             <styles.BottomContainer__AsideContainer_Block>
-              <styles.BottomContainer__AsideContainer_Block_Image src="donesolid.svg"></styles.BottomContainer__AsideContainer_Block_Image>{" "}
+              <styles.BottomContainer__AsideContainer_Block_Image src="doneSolid.svg"></styles.BottomContainer__AsideContainer_Block_Image>{" "}
               All
             </styles.BottomContainer__AsideContainer_Block>
             <styles.BottomContainer__AsideContainer_Block>
@@ -33,7 +33,7 @@ export default function ToDo({}) {
           </styles.BottomContainer__AsideContainer_List>
           <styles.BottomContainer__AsideContainer_Block_Task>
             <styles.BottomContainer__AsideContainer_Block_Task_innerBox>
-              <styles.BottomContainer__AsideContainer_Block_Image_centered src="addtask.svg"></styles.BottomContainer__AsideContainer_Block_Image_centered>{" "}
+              <styles.BottomContainer__AsideContainer_Block_Image_centered src="addTask.svg"></styles.BottomContainer__AsideContainer_Block_Image_centered>{" "}
               Add Task
             </styles.BottomContainer__AsideContainer_Block_Task_innerBox>
           </styles.BottomContainer__AsideContainer_Block_Task>
