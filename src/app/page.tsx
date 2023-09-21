@@ -1,15 +1,6 @@
-"use client";
-import React, { useState } from "react";
-import * as styles from "./styles/blocks/styles";
-import ToDo from "../components/ToDo"
-import Title from "../components/Title"
+'use client'
+import HomePage from '../app/blocks/HomePage/HomePage'
 
-export default function Home() { 
-
-  return (
-    <styles.PrimeContainer>
-      <Title/>
-      <ToDo/>
-    </styles.PrimeContainer>
-  );
+export default function Home() {
+  return <HomePage />
 }
