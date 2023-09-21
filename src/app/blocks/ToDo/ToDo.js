@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import Modal from 'react-modal'
+import { ModalProvider } from 'styled-react-modal'
 import {
   ToDoContainer,
   TopContainer,
@@ -16,12 +18,30 @@ import {
   AsideBlockImageCentered,
   BottomBlockContainer,
 } from './ToDoStyles'
+import {
+  ModalContainer,
+  CloseButton,
+  ModalHeader,
+  ModalBox,
+  ModalInput,
+  SaveButton,
+  ModalLittleBox,
+  ModalSigns,
+} from '../ModalWindow/ModalWindowStyles'
 import Task from '../Task/Task'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function ToDo({}) {
+export default function ToDo() {
   const [taskName, setTaskName] = useState('Task 1')
   const [userName, setUserName] = useState('UserName')
+
+  Modal.setAppElement('#modal')
+
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+
+  function toggleModal() {
+    setModalIsOpen(!modalIsOpen)
+  }
 
   return (
     <ToDoContainer>
@@ -31,7 +51,7 @@ export default function ToDo({}) {
         <CellImage src="profile.svg"></CellImage>
       </TopContainer>
       <BottomContainer>
-        <AsideContainer>
+        <AsideContainer id="modal">
           <AsideList>
             <AsideBlock_active type="button">
               <AsideBlockImage src="calendar.svg"></AsideBlockImage> Today
@@ -43,7 +63,7 @@ export default function ToDo({}) {
               <AsideBlockImage src="arrows.svg"></AsideBlockImage> Date
             </AsideBlock>
           </AsideList>
-          <AsideBlockTask>
+          <AsideBlockTask onClick={toggleModal}>
             <AsideBlockTaskInnerBox>
               <AsideBlockImageCentered src="addTask.svg"></AsideBlockImageCentered>{' '}
               Add Task
@@ -57,6 +77,28 @@ export default function ToDo({}) {
           <TaskEdition />
         </BottomBlockContainer>
       </BottomContainer>
+      <ModalProvider>
+        <ModalContainer
+          isOpen={modalIsOpen}
+          onBackgroundClick={toggleModal}
+          onEscapeKeydown={toggleModal}
+        >
+          <ModalHeader>Create task</ModalHeader>
+          <form>
+            <ModalInput placeholder="Enter text..." />
+          </form>
+          <ModalBox>
+            <ModalLittleBox>
+              <ModalSigns alt="green circle" src="doneGreen.svg" />
+              <SaveButton type="button">Save</SaveButton>
+            </ModalLittleBox>
+            <ModalLittleBox onClick={toggleModal}>
+              <ModalSigns alt="grey cross" src="cross.svg" />
+              <CloseButton type="button"> Close</CloseButton>
+            </ModalLittleBox>
+          </ModalBox>
+        </ModalContainer>
+      </ModalProvider>
     </ToDoContainer>
   )
 }

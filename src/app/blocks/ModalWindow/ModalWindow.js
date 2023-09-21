@@ -1,45 +1,38 @@
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
 import Modal from 'react-modal'
 
-export default function ModalWindow({}) {
+export default function ModalWindow({ child }) {
   let subtitle
-  Modal.setAppElement('#app')
+  Modal.setAppElement('#modal')
 
-  const [modalIsOpen, setModalIsOpen] = useState(true)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
 
-  function openModal() {
-    setModalIsOpen(true)
-  }
-
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    subtitle.style.color = '#f29'
-  }
-
-  function closeModal() {
-    setModalIsOpen(false)
+  function toggleModal() {
+    setModalIsOpen(!modalIsOpen)
   }
 
   return (
-    <div id="app">
-      <button onClick={openModal}>Open Modal</button>
+    <div id="modal">
+      <button
+        style={{
+          backgroundColor: 'transparent',
+          maxWidth: '30px',
+          fontSize: '40px',
+        }}
+        type="button"
+        onClick={toggleModal}
+      >
+        Open Modal
+      </button>
       <Modal
         isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        contentLabel="Example Modal"
+        onBackgroundClick={toggleModal}
+        onEscapeKeydown={toggleModal}
       >
         <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
+        <button type="button" onClick={toggleModal}>
+          close
+        </button>
       </Modal>
     </div>
   )
