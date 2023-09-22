@@ -47,12 +47,52 @@ export default function ToDo() {
   const [secondButton, setSecondButton] = useState('none')
   const [thirdButton, setThirdButton] = useState('none')
 
+  //Контроллируемый инпут
+  const [inputValue, setInputValue] = useState('')
+  const [tasks, setTasks] = useState([])
+
   //Модальное окно
   Modal.setAppElement('#modal')
   const [modalIsOpen, setModalIsOpen] = useState(false)
   function toggleModal() {
     setModalIsOpen(!modalIsOpen)
   }
+
+  // const [isModalOpen, setIsModalOpen] = useState('delete')
+  // const toggle = (data) = > setIsModalOpen(data)
+
+  // const [test, setTest] = useState({
+  //   dataSort: 'asc',
+  //   filter: 'all',
+  //   today: false,
+  // })
+
+  // const modals =
+  //   {
+  //     edit:<EditModal/>,
+  //     create:<EditModal/>,
+  //     delete:<EditModal/>,
+  //   }
+
+  // <ModalWrapper $isVisible={!!isModalOpen} children={modals.isModalOpen} />
+
+  // useEffect(() => {
+  // handleTasks()
+  // }, [tasks,test])
+
+  // const handleTasks = () =>{
+  //   let sortedTasks = [...tasks]
+  //   if (status !== 'all') {
+  //     oldTasks = oldTasks.filter((task) =>
+  //       status === ' done' ? task.done === true : task.done === false
+  //     )
+  //   }
+  //   if (today) tasks.filter((task) => task.date <= today)
+  //   oldTasks.sort((a, b) =>
+  //     date === 'asc' ? a.date -   b.date : b.date - a.date
+  //   )
+  // setTasks(sortedTasks)
+  // }
 
   //Кнопки слева от списка дел
   function handleTodayClick() {
@@ -98,6 +138,39 @@ export default function ToDo() {
     setFirstButton('none')
     setSecondButton('none')
     setThirdButton(backgroundColor)
+  }
+
+  //Добавление новых задач
+
+  function handleInputChange(e) {
+    setInputValue(e.target.value)
+  }
+
+  function handleFormSubmit(e) {
+    e.preventDefault()
+    const date = new Date()
+    if (inputValue !== '' && tasks.length <= 10) {
+      const task = (
+        <Task
+          key={Math.random()}
+          deleteTask={() => setTasks(tasks.filter((el) => el.key !== task.key))}
+          taskTag={inputValue}
+          taskTime={`${date.getDate()} ${date.getMinutes()}`}
+        />
+      )
+      console.log(tasks.map((el) => el))
+      setTasks([...tasks, task])
+      function deleteTask() {
+        tasks.filter((el) => {
+          console.log(el)
+        })
+      }
+    } else {
+      if (inputValue.length === 0) {
+        alert
+      }
+      return
+    }
   }
 
   return (
@@ -174,11 +247,7 @@ export default function ToDo() {
             </AsideBlockTaskInnerBox>
           </AsideBlockTask>
         </AsideContainer>
-        <BottomBlockContainer>
-          <Task taskTag={'Task 1'} />
-          <Task taskTag={'Task 2'} />
-          <Task taskTag={'Task 3'} />
-        </BottomBlockContainer>
+        <BottomBlockContainer>{tasks}</BottomBlockContainer>
       </BottomContainer>
       <ModalProvider>
         <ModalContainer
@@ -187,19 +256,24 @@ export default function ToDo() {
           onEscapeKeydown={toggleModal}
         >
           <ModalHeader>Create task</ModalHeader>
-          <form>
-            <ModalInput placeholder="Enter text..." />
+          <form onSubmit={handleFormSubmit}>
+            <ModalInput
+              required
+              maxLength={30}
+              onChange={handleInputChange}
+              placeholder="Enter text..."
+            />
+            <ModalBox>
+              <ModalLittleBox type="submit">
+                <ModalSigns alt="green circle" src="doneGreen.svg" />
+                <SaveButton>Save</SaveButton>
+              </ModalLittleBox>
+              <ModalLittleBox onClick={toggleModal} type="reset">
+                <ModalSigns alt="grey cross" src="cross.svg" />
+                <CloseButton>Close</CloseButton>
+              </ModalLittleBox>
+            </ModalBox>
           </form>
-          <ModalBox>
-            <ModalLittleBox>
-              <ModalSigns alt="green circle" src="doneGreen.svg" />
-              <SaveButton type="button">Save</SaveButton>
-            </ModalLittleBox>
-            <ModalLittleBox onClick={toggleModal}>
-              <ModalSigns alt="grey cross" src="cross.svg" />
-              <CloseButton type="button"> Close</CloseButton>
-            </ModalLittleBox>
-          </ModalBox>
         </ModalContainer>
       </ModalProvider>
     </ToDoContainer>

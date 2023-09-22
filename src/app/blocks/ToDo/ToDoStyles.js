@@ -40,7 +40,7 @@ export const CellImage = styled.img`
 
 export const BottomContainer = styled.div`
   max-width: 672px;
-  max-height: 312px;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -51,6 +51,7 @@ export const BottomBlockContainer = styled.div`
   background-color: white;
   border-radius: 10px;
   min-height: 312px;
+  padding-bottom: 20px;
 `
 
 export const AsideContainer = styled.div`

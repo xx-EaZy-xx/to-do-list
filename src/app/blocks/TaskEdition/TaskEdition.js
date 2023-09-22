@@ -14,7 +14,7 @@ import {
   DeleteButton,
 } from '../ModalWindow/ModalWindowStyles'
 
-export default function TaskEdition({}) {
+export default function TaskEdition({ deleteTask }) {
   Modal.setAppElement('#modal')
 
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -44,7 +44,7 @@ export default function TaskEdition({}) {
           <ModalHeader>Delete task</ModalHeader>
           <ModalMessage>Are you sure about deleting this task?</ModalMessage>
           <ModalBox>
-            <ModalLittleBox>
+            <ModalLittleBox onClick={deleteTask}>
               <ModalSigns alt="green circle" src="trash.svg" />
               <DeleteButton type="button">Delete</DeleteButton>
             </ModalLittleBox>

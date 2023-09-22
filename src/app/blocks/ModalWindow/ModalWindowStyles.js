@@ -14,22 +14,24 @@ export const ModalContainer = Modal.styled`
   border-radius: 10px;
 `
 
-export const CloseButton = styled.button`
+export const CloseButton = styled.div`
   border: none;
   color: rgba(107, 114, 128, 1);
   cursor: pointer;
   border-radius: 5px;
   background-color: transparent;
   font-size: 16px;
+  margin-left: 8px;
 `
 
-export const SaveButton = styled.button`
+export const SaveButton = styled.div`
   border: none;
   cursor: pointer;
   border-radius: 5px;
   color: rgba(103, 184, 203, 1);
   background-color: transparent;
   font-size: 16px;
+  margin-left: 8px;
 `
 
 export const DeleteButton = styled(SaveButton)`
@@ -54,7 +56,7 @@ export const ModalBox = styled.div`
   margin-bottom: 17px;
 `
 
-export const ModalLittleBox = styled.div`
+export const ModalLittleBox = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -65,6 +67,10 @@ export const ModalLittleBox = styled.div`
   justify-content: center;
   transition: 0.1s;
   cursor: pointer;
+  outline: none;
+  border: none;
+  align-items: center;
+  margin-top: 24px;
 
   &:hover {
     transition: 0.1s;
