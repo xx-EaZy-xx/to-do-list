@@ -69,15 +69,16 @@ export const AsideList = styled.div`
 
 export const AsideBlock = styled.button`
   display: flex;
-  flex-direction: column;
   cursor: pointer;
   border: none;
   border-radius: 10px;
-  color: grey;
+  color: ${(props) => (props.active ? 'rgba(147, 51, 234, 1)' : 'grey')};
+  background-color: ${(props) =>
+    props.active ? 'rgba(147, 51, 234, 0.06)' : 'transparent'};
   margin-bottom: 10px;
+  display: ${(props) => props.display};
   min-width: 185px;
   min-height: 40px;
-  display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: center;
@@ -91,13 +92,35 @@ export const AsideBlock = styled.button`
 
   &:active {
     transition: 0.1s;
-    background-color: rgba(85, 85, 85, 0.5);
+    background-color: rgba(147, 51, 234, 0.3);
+    color: rgba(147, 51, 234, 1);
   }
+`
+
+export const CommunistAsideList = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(147, 51, 234, 0.06);
+  color: rgba(147, 51, 234, 1);
+  min-width: 185px;
+  min-height: 40px;
+  align-items: center;
+  transition: 0.1s;
+  display: ${(props) => props.display};
+  flex-direction: column;
+`
+
+export const CommunistAsideBlock = styled(AsideBlock)`
+  background: transparent;
+  margin: 0;
+  background-color: ${(props) => props.backgroundColor};
 `
 
 export const AsideBlock_active = styled(AsideBlock)`
   background-color: rgba(147, 51, 234, 0.06);
-  color: #9333ea;
+  color: rgba(147, 51, 234, 1);
 
   &:hover {
     transition: 0.1s;

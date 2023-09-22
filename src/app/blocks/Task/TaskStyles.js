@@ -1,21 +1,16 @@
 import styled from 'styled-components'
 
-export const TaskBox = styled.div`
-  min-width: 466px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-width: max-content;
-  background-color: rgba(147, 51, 234, 0.06);
-  border-radius: 10px;
-  max-width: 428px;
-  min-height: 0;
+export const MainTaskBox = styled.div`
+  width: 92%;
   height: 33px;
-  margin: 0 auto 7px auto;
+  background-color: rgba(147, 51, 234, 0.06);
+  justify-content: space-between;
+  margin: 7px auto 0 auto;
   font-size: 16px;
   align-items: center;
-  transition: 0.3s;
+  transition: 0.1s;
+  border-radius: 10px;
+  display: flex;
 
   &:first-of-type {
     margin-top: 31px;
@@ -27,17 +22,30 @@ export const TaskBox = styled.div`
   }
 `
 
+export const TaskBox = styled.button`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  min-width: max-content;
+  min-height: 0;
+  outline: none;
+  border: none;
+  width: 100%;
+  background: transparent;
+`
+
 export const LittleBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: auto 16px;
+  margin: auto 16px auto 0px;
 `
 
 export const ButtonBox = styled.button`
   cursor: pointer;
   border: none;
   background: transparent;
+  margin-left: 11px;
 `
 
 export const TaskImage = styled.img`

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {
+  MainTaskBox,
   TaskBox,
   ButtonBox,
   TaskImage,
@@ -7,30 +8,45 @@ import {
   LittleBox,
   LittleBoxLeft,
 } from './TaskStyles'
+import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function Task({ taskState }) {
+export default function Task({ taskTag }) {
   const [taskTime, setTaskTime] = useState('18:30')
+  const [isTaskPushed, setIsTaskPushed] = useState(false)
+  const [isCheckPushed, setIsCheckPushed] = useState(false)
+
+  function handleTaskPush() {
+    setIsTaskPushed(!isTaskPushed)
+  }
+
+  function handleCheckPush() {
+    setIsCheckPushed(!isCheckPushed)
+  }
 
   return (
-    <TaskBox>
-      <LittleBox>
+    <>
+      <MainTaskBox>
         <ButtonBox>
           <TaskImage
-            src={taskState ? 'done.svg' : 'doneGrey.svg'}
+            onClick={handleCheckPush}
+            src={isCheckPushed ? 'done.svg' : 'doneGrey.svg'}
             alt="кнопка завершить задачу - галочка"
           ></TaskImage>
         </ButtonBox>
-        Task 1
-      </LittleBox>
-      <LittleBoxLeft>
-        Today at {taskTime}
-        <ButtonBox>
-          <TaskImageLeft
-            src="points.svg"
-            alt="кнопка ещё - 3 точки"
-          ></TaskImageLeft>
-        </ButtonBox>
-      </LittleBoxLeft>
-    </TaskBox>
+        <TaskBox>
+          <LittleBox>{taskTag}</LittleBox>
+          <LittleBoxLeft>
+            Today at {taskTime}
+            <ButtonBox onClick={handleTaskPush}>
+              <TaskImageLeft
+                src="points.svg"
+                alt="кнопка ещё - 3 точки"
+              ></TaskImageLeft>
+            </ButtonBox>
+          </LittleBoxLeft>
+        </TaskBox>
+      </MainTaskBox>
+      {isTaskPushed ? <TaskEdition /> : ''}
+    </>
   )
 }
