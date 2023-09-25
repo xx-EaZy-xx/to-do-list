@@ -27,12 +27,12 @@ export default function ToDo() {
   const [tasks, setTasks] = useState([
     {
       name: 'fuck1',
-      date: new Date(),
+      date: `1695660611586`,
       done: false,
     },
     {
       name: 'fuck2',
-      date: new Date(),
+      date: `1695660711586`,
       done: false,
     },
   ]);
@@ -128,6 +128,8 @@ export default function ToDo() {
     switch (key) {
       case 'Escape':
         toggleModal();
+      case 'Enter':
+        newAddTask(inputValue);
         break;
     }
   }
@@ -152,23 +154,12 @@ export default function ToDo() {
       ...tasks,
       {
         name: name,
-        date: new Date(),
+        date: +Date.now(),
         done: false,
       },
     ];
     setTasks(newTasks);
     console.log(tasks);
-  }
-
-  function returnTasks() {
-    return tasks.map((task) => {
-      <Task
-        taskTag={task.name}
-        taskDate={task.date}
-        taskIsDone={task.done}
-        toggleModal={toggleModal}
-      ></Task>;
-    });
   }
 
   // const [test, setTest] = useState({
@@ -301,7 +292,16 @@ export default function ToDo() {
             </AsideBlockTaskInnerBox>
           </AsideBlockTask>
         </AsideContainer>
-        <BottomBlockContainer>{returnTasks()}</BottomBlockContainer>
+        <BottomBlockContainer>
+          {tasks.map((task) => (
+            <Task
+              key={task.date}
+              taskTag={task.name}
+              taskIsDone={task.done}
+              toggleModal={toggleModal}
+            ></Task>
+          ))}
+        </BottomBlockContainer>
       </BottomContainer>
       {returnModal()}
     </ToDoContainer>

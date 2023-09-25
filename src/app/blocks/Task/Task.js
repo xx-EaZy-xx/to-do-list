@@ -7,6 +7,7 @@ import {
   TaskImageLeft,
   LittleBox,
   LittleBoxLeft,
+  SupremeTaskBox,
 } from './TaskStyles';
 import TaskEdition from '../TaskEdition/TaskEdition';
 
@@ -23,7 +24,7 @@ export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
   }
 
   return (
-    <>
+    <SupremeTaskBox>
       <MainTaskBox>
         <ButtonBox>
           <TaskImage
@@ -46,6 +47,6 @@ export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
         </TaskBox>
       </MainTaskBox>
       {isTaskPushed ? <TaskEdition toggleModal={toggleModal} /> : ''}
-    </>
+    </SupremeTaskBox>
   );
 }

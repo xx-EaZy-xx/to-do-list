@@ -1,9 +1,9 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const ToDoContainer = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 export const TopContainer = styled.section`
   display: flex;
@@ -17,26 +17,26 @@ export const TopContainer = styled.section`
   border-radius: 10px;
   margin: auto 90px 31px auto;
   align-items: center;
-`
+`;
 
 export const ToDoCell = styled.div`
   color: #9333ea;
   font-size: 20px;
   font-weight: bold;
   line-height: 23px;
-`
+`;
 
 export const UserNameCell = styled(ToDoCell)`
   font-size: 16px;
   font-weight: normal;
   line-height: 18.75px;
-`
+`;
 
 export const CellImage = styled.img`
   width: 16px;
   height: 16px;
   contain: cover;
-`
+`;
 
 export const BottomContainer = styled.div`
   max-width: 672px;
@@ -44,15 +44,19 @@ export const BottomContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-`
+`;
 
-export const BottomBlockContainer = styled.div`
+export const BottomBlockContainer = styled.ul`
   min-width: 466px;
   background-color: white;
   border-radius: 10px;
   min-height: 312px;
   padding-bottom: 20px;
-`
+  padding-left: 0;
+  padding-right: 0;
+  list-style-type: none;
+  margin: 0;
+`;
 
 export const AsideContainer = styled.div`
   display: flex;
@@ -61,12 +65,12 @@ export const AsideContainer = styled.div`
   font-size: 16px;
   line-height: 18.75px;
   min-height: 312px;
-`
+`;
 
 export const AsideList = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 export const AsideBlock = styled.button`
   display: flex;
@@ -96,7 +100,7 @@ export const AsideBlock = styled.button`
     background-color: rgba(147, 51, 234, 0.3);
     color: rgba(147, 51, 234, 1);
   }
-`
+`;
 
 export const CommunistAsideList = styled.div`
   display: flex;
@@ -112,13 +116,13 @@ export const CommunistAsideList = styled.div`
   display: ${(props) => props.display};
   flex-direction: column;
   margin-bottom: 70px;
-`
+`;
 
 export const CommunistAsideBlock = styled(AsideBlock)`
   background: transparent;
   margin: 0;
   background-color: ${(props) => props.backgroundColor};
-`
+`;
 
 export const AsideBlock_active = styled(AsideBlock)`
   background-color: rgba(147, 51, 234, 0.06);
@@ -134,22 +138,22 @@ export const AsideBlock_active = styled(AsideBlock)`
     transition: 0.1s;
     background-color: rgba(146, 51, 234, 0.6);
   }
-`
+`;
 
 export const AsideBlockTask = styled(AsideBlock_active)`
   margin: 0 auto;
-`
+`;
 export const AsideBlockTaskInnerBox = styled.div`
   margin: auto;
   display: flex;
-`
+`;
 
 export const AsideBlockImage = styled.img`
   max-height: 20px;
   margin: 0 12px 0 14px;
-`
+`;
 
 export const AsideBlockImageCentered = styled(AsideBlockImage)`
   margin: 0;
   margin-right: 12px;
-`
+`;
