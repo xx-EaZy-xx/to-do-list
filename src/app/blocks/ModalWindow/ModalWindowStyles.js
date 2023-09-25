@@ -1,7 +1,17 @@
 import styled from 'styled-components'
-import Modal from 'styled-react-modal'
 
-export const ModalContainer = Modal.styled`
+export const ModalBackground = styled.div`
+  background-color: rgba(65, 59, 61, 0.6);
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+  visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
+  transition: 0;
+`
+
+export const ModalContainer = styled.div`
   min-width: 466px;
   max-width: fit-content;
   min-height: 181px;
@@ -12,6 +22,9 @@ export const ModalContainer = Modal.styled`
   background-color: white;
   font-size: 20px;
   border-radius: 10px;
+  margin: auto;
+  margin-top: 30vh;
+
 `
 
 export const CloseButton = styled.div`
@@ -43,7 +56,7 @@ export const ModalHeader = styled.div`
   width: 100%;
   font-weight: bold;
   color: rgba(147, 51, 234, 1);
-  padding-left: 24px;
+  padding-left: 44px;
   padding-bottom: 11px;
   padding-top: 14px;
 `
@@ -65,7 +78,7 @@ export const ModalLittleBox = styled.button`
   background-color: rgba(236, 236, 236, 0.5);
   border-radius: 5px;
   justify-content: center;
-  transition: 0.1s;
+  transition: 0s;
   cursor: pointer;
   outline: none;
   border: none;
@@ -73,13 +86,13 @@ export const ModalLittleBox = styled.button`
   margin-top: 24px;
 
   &:hover {
-    transition: 0.1s;
+    transition: 0s;
     background-color: rgba(138, 138, 138, 0.3);
   }
 
   &:active {
     background-color: rgba(138, 138, 138, 0.6);
-    transition: 0.1s;
+    transition: 0s;
   }
 `
 

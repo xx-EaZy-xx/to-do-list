@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal'
-import { ModalProvider } from 'styled-react-modal'
 import {
   ToDoContainer,
   TopContainer,
@@ -11,7 +10,6 @@ import {
   AsideContainer,
   AsideList,
   AsideBlock,
-  AsideBlock_active,
   AsideBlockTask,
   AsideBlockTaskInnerBox,
   AsideBlockImage,
@@ -20,17 +18,8 @@ import {
   CommunistAsideList,
   CommunistAsideBlock,
 } from './ToDoStyles'
-import {
-  ModalContainer,
-  CloseButton,
-  ModalHeader,
-  ModalBox,
-  ModalInput,
-  SaveButton,
-  ModalLittleBox,
-  ModalSigns,
-} from '../ModalWindow/ModalWindowStyles'
 import Task from '../Task/Task'
+import ModalWindow from '../ModalWindow/ModalWindow'
 
 export default function ToDo() {
   const [userName, setUserName] = useState('UserName')
@@ -51,48 +40,95 @@ export default function ToDo() {
   const [inputValue, setInputValue] = useState('')
   const [tasks, setTasks] = useState([])
 
-  //Модальное окно
-  Modal.setAppElement('#modal')
+  //Модальные окна
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  function toggleModal() {
-    setModalIsOpen(!modalIsOpen)
+  const [modalIsOpenNew, setModalIsOpenNew] = useState('create')
+
+  const modals = {
+    create: (
+      <ModalWindow
+        $isOpen={modalIsOpen}
+        isToggled={toggleModal}
+        overlayClick={handleOverlayClose}
+        onEscPress={handleEscClose}
+        poly={'create'}
+      />
+    ),
+    delete: (
+      <ModalWindow
+        $isOpen={modalIsOpen}
+        isToggled={toggleModal}
+        overlayClick={handleOverlayClose}
+        onEscPress={handleEscClose}
+        poly={'delete'}
+      />
+    ),
   }
 
-  // const [isModalOpen, setIsModalOpen] = useState('delete')
-  // const toggle = (data) = > setIsModalOpen(data)
+  //{modalIsOpen === 'create'? modals.create : modals.delete}
 
-  // const [test, setTest] = useState({
-  //   dataSort: 'asc',
-  //   filter: 'all',
-  //   today: false,
-  // })
+  function toggleModal(arg) {
+    setModalIsOpen(arg)
+  }
 
-  // const modals =
-  //   {
-  //     edit:<EditModal/>,
-  //     create:<EditModal/>,
-  //     delete:<EditModal/>,
-  //   }
+  const returnModal = () => {
+    if (modalIsOpen === 'create') {
+      return modals.create
+    } else if (modalIsOpen === 'delete') {
+      return modals.delete
+    } else {
+      return
+    }
+  }
 
-  // <ModalWrapper $isVisible={!!isModalOpen} children={modals.isModalOpen} />
+  const handleToggle = (data) => setModalIsOpenNew(data)
 
-  // useEffect(() => {
-  // handleTasks()
-  // }, [tasks,test])
+  // код Антона
+  //   const [isModalOpen, setIsModalOpen] = useState('delete')
+  //   const toggle = (data) => setIsModalOpen(data)
 
-  // const handleTasks = () =>{
-  //   let sortedTasks = [...tasks]
-  //   if (status !== 'all') {
-  //     oldTasks = oldTasks.filter((task) =>
-  //       status === ' done' ? task.done === true : task.done === false
+  //   <ModalWrapper $isVisible={!!isModalOpen} children={modals.isModalOpen} />
+
+  //   const [test, setTest] = useState({
+  //     dataSort: 'asc',
+  //     filter: 'all',
+  //     today: false,
+  //   })
+
+  //   useEffect(() => {
+  //   handleTasks()
+  //   }, [tasks,test])
+
+  //   const handleTasks = () =>{
+  //     let sortedTasks = [...tasks]
+  //     if (status !== 'all') {
+  //       oldTasks = oldTasks.filter((task) =>
+  //         status === ' done' ? task.done === true : task.done === false
+  //       )
+  //     }
+  //     if (today) tasks.filter((task) => task.date <= today)
+  //     oldTasks.sort((a, b) =>
+  //       date === 'asc' ? a.date -   b.date : b.date - a.date
   //     )
+  //   setTasks(sortedTasks)
   //   }
-  //   if (today) tasks.filter((task) => task.date <= today)
-  //   oldTasks.sort((a, b) =>
-  //     date === 'asc' ? a.date -   b.date : b.date - a.date
-  //   )
-  // setTasks(sortedTasks)
-  // }
+  // код Антона
+
+  //Код моей новой модалки
+
+  function handleOverlayClose(e) {
+    if (e.target === e.currentTarget) {
+      toggleModal()
+    }
+  }
+
+  function handleEscClose({ key }) {
+    switch (key) {
+      case 'Escape':
+        toggleModal()
+        break
+    }
+  }
 
   //Кнопки слева от списка дел
   function handleTodayClick() {
@@ -146,8 +182,7 @@ export default function ToDo() {
     setInputValue(e.target.value)
   }
 
-  function handleFormSubmit(e) {
-    e.preventDefault()
+  function handleFormSubmit() {
     const date = new Date()
     if (inputValue !== '' && tasks.length <= 10) {
       const task = (
@@ -156,6 +191,7 @@ export default function ToDo() {
           deleteTask={() => setTasks(tasks.filter((el) => el.key !== task.key))}
           taskTag={inputValue}
           taskTime={`${date.getDate()} ${date.getMinutes()}`}
+          toggleModal={toggleModal('delete')}
         />
       )
       console.log(tasks.map((el) => el))
@@ -240,7 +276,11 @@ export default function ToDo() {
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
             </CommunistAsideBlock>
           </CommunistAsideList>
-          <AsideBlockTask onClick={toggleModal}>
+          <AsideBlockTask
+            onClick={() => {
+              toggleModal('create')
+            }}
+          >
             <AsideBlockTaskInnerBox>
               <AsideBlockImageCentered src="addTask.svg"></AsideBlockImageCentered>{' '}
               Add Task
@@ -249,33 +289,7 @@ export default function ToDo() {
         </AsideContainer>
         <BottomBlockContainer>{tasks}</BottomBlockContainer>
       </BottomContainer>
-      <ModalProvider>
-        <ModalContainer
-          isOpen={modalIsOpen}
-          onBackgroundClick={toggleModal}
-          onEscapeKeydown={toggleModal}
-        >
-          <ModalHeader>Create task</ModalHeader>
-          <form onSubmit={handleFormSubmit}>
-            <ModalInput
-              required
-              maxLength={30}
-              onChange={handleInputChange}
-              placeholder="Enter text..."
-            />
-            <ModalBox>
-              <ModalLittleBox type="submit">
-                <ModalSigns alt="green circle" src="doneGreen.svg" />
-                <SaveButton>Save</SaveButton>
-              </ModalLittleBox>
-              <ModalLittleBox onClick={toggleModal} type="reset">
-                <ModalSigns alt="grey cross" src="cross.svg" />
-                <CloseButton>Close</CloseButton>
-              </ModalLittleBox>
-            </ModalBox>
-          </form>
-        </ModalContainer>
-      </ModalProvider>
+      {returnModal()}
     </ToDoContainer>
   )
 }

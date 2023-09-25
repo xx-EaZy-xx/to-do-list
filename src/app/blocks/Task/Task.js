@@ -10,7 +10,7 @@ import {
 } from './TaskStyles'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function Task({ taskTag, deleteTask, taskTime }) {
+export default function Task({ taskTag, deleteTask, taskTime, toggleModal }) {
   const [isTaskPushed, setIsTaskPushed] = useState(false)
   const [isCheckPushed, setIsCheckPushed] = useState(false)
 
@@ -45,7 +45,7 @@ export default function Task({ taskTag, deleteTask, taskTime }) {
           </LittleBoxLeft>
         </TaskBox>
       </MainTaskBox>
-      {isTaskPushed ? <TaskEdition deleteTask={deleteTask} /> : ''}
+      {isTaskPushed ? <TaskEdition deleteTask={deleteTask} toggleModal={toggleModal}/> : ''}
     </>
   )
 }

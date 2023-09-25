@@ -14,14 +14,10 @@ import {
   DeleteButton,
 } from '../ModalWindow/ModalWindowStyles'
 
-export default function TaskEdition({ deleteTask }) {
+export default function TaskEdition({ deleteTask, toggleModal }) {
   Modal.setAppElement('#modal')
 
   const [modalIsOpen, setModalIsOpen] = useState(false)
-
-  function toggleModal() {
-    setModalIsOpen(!modalIsOpen)
-  }
 
   return (
     <EditBox>
