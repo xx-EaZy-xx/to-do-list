@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   MainTaskBox,
   TaskBox,
@@ -7,19 +7,19 @@ import {
   TaskImageLeft,
   LittleBox,
   LittleBoxLeft,
-} from './TaskStyles'
-import TaskEdition from '../TaskEdition/TaskEdition'
+} from './TaskStyles';
+import TaskEdition from '../TaskEdition/TaskEdition';
 
-export default function Task({ taskTag, deleteTask, taskTime, toggleModal }) {
-  const [isTaskPushed, setIsTaskPushed] = useState(false)
-  const [isCheckPushed, setIsCheckPushed] = useState(false)
+export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
+  const [isTaskPushed, setIsTaskPushed] = useState(false);
+  const [isCheckPushed, setIsCheckPushed] = useState(false);
 
   function handleTaskPush() {
-    setIsTaskPushed(!isTaskPushed)
+    setIsTaskPushed(!isTaskPushed);
   }
 
   function handleCheckPush() {
-    setIsCheckPushed(!isCheckPushed)
+    setIsCheckPushed(!isCheckPushed);
   }
 
   return (
@@ -35,7 +35,7 @@ export default function Task({ taskTag, deleteTask, taskTime, toggleModal }) {
         <TaskBox>
           <LittleBox>{taskTag}</LittleBox>
           <LittleBoxLeft>
-            Today at {taskTime}
+            Today at {taskDate}
             <ButtonBox onClick={handleTaskPush}>
               <TaskImageLeft
                 src="points.svg"
@@ -45,7 +45,7 @@ export default function Task({ taskTag, deleteTask, taskTime, toggleModal }) {
           </LittleBoxLeft>
         </TaskBox>
       </MainTaskBox>
-      {isTaskPushed ? <TaskEdition deleteTask={deleteTask} toggleModal={toggleModal}/> : ''}
+      {isTaskPushed ? <TaskEdition toggleModal={toggleModal} /> : ''}
     </>
-  )
+  );
 }

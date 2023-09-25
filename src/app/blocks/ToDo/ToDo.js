@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import Modal from 'react-modal'
+import React, { useState, useEffect } from 'react';
 import {
   ToDoContainer,
   TopContainer,
@@ -17,71 +16,36 @@ import {
   BottomBlockContainer,
   CommunistAsideList,
   CommunistAsideBlock,
-} from './ToDoStyles'
-import Task from '../Task/Task'
-import ModalWindow from '../ModalWindow/ModalWindow'
+} from './ToDoStyles';
+import Task from '../Task/Task';
+import ModalWindow from '../ModalWindow/ModalWindow';
 
 export default function ToDo() {
-  const [userName, setUserName] = useState('UserName')
-  //Кнопки слева от списка дел
-  const [todayIsClicked, setTodayIsClicked] = useState(true)
-  const [allIsClicked, setAllIsClicked] = useState(false)
-  const [allIsClickedInner, setAllIsClickedInner] = useState(allIsClicked)
-  const [arrowsIsClicked, setArrowsIsClicked] = useState(false)
-  const [arrowsIsVisible, setArrowsIsVisible] = useState('flex')
-  const [taskListIsVisible, setTaskListIsVisible] = useState('none')
-  // Всплывающие кнопки
-  const backgroundColor = 'rgba(147, 51, 234, 0.2)'
-  const [firstButton, setFirstButton] = useState('none')
-  const [secondButton, setSecondButton] = useState('none')
-  const [thirdButton, setThirdButton] = useState('none')
+  //Имя пользователя
+  const [userName, setUserName] = useState('UserName');
+  //Массив тасок
+  const [tasks, setTasks] = useState([
+    {
+      name: 'fuck1',
+      date: new Date(),
+      done: false,
+    },
+    {
+      name: 'fuck2',
+      date: new Date(),
+      done: false,
+    },
+  ]);
 
-  //Контроллируемый инпут
-  const [inputValue, setInputValue] = useState('')
-  const [tasks, setTasks] = useState([])
-
+  const [inputValue, setInputValue] = useState('');
   //Модальные окна
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [modalIsOpenNew, setModalIsOpenNew] = useState('create')
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const modals = {
-    create: (
-      <ModalWindow
-        $isOpen={modalIsOpen}
-        isToggled={toggleModal}
-        overlayClick={handleOverlayClose}
-        onEscPress={handleEscClose}
-        poly={'create'}
-      />
-    ),
-    delete: (
-      <ModalWindow
-        $isOpen={modalIsOpen}
-        isToggled={toggleModal}
-        overlayClick={handleOverlayClose}
-        onEscPress={handleEscClose}
-        poly={'delete'}
-      />
-    ),
-  }
+  //Боковые кнопки
+  const [buttonClick, setButtonClick] = useState('today');
+  const [doneButtonClick, setDoneButtonClick] = useState('all-inner');
 
   //{modalIsOpen === 'create'? modals.create : modals.delete}
-
-  function toggleModal(arg) {
-    setModalIsOpen(arg)
-  }
-
-  const returnModal = () => {
-    if (modalIsOpen === 'create') {
-      return modals.create
-    } else if (modalIsOpen === 'delete') {
-      return modals.delete
-    } else {
-      return
-    }
-  }
-
-  const handleToggle = (data) => setModalIsOpenNew(data)
 
   // код Антона
   //   const [isModalOpen, setIsModalOpen] = useState('delete')
@@ -114,100 +78,127 @@ export default function ToDo() {
   //   }
   // код Антона
 
-  //Код моей новой модалки
+  //Открытие/закрытие модалки
 
-  function handleOverlayClose(e) {
-    if (e.target === e.currentTarget) {
-      toggleModal()
-    }
+  function handleInputChange(e) {
+    setInputValue(e.target.value);
   }
 
+  const modals = {
+    create: (
+      <ModalWindow
+        $isOpen={modalIsOpen}
+        isToggled={toggleModal}
+        overlayClick={handleOverlayClose}
+        onEscPress={handleEscClose}
+        poly={'create'}
+        inputValue={inputValue}
+        handleInputChange={handleInputChange}
+        addTask={newAddTask}
+      />
+    ),
+    delete: (
+      <ModalWindow
+        $isOpen={modalIsOpen}
+        isToggled={toggleModal}
+        overlayClick={handleOverlayClose}
+        onEscPress={handleEscClose}
+        poly={'delete'}
+      />
+    ),
+  };
+  function toggleModal(arg) {
+    setModalIsOpen(arg);
+  }
+  const returnModal = () => {
+    if (modalIsOpen === 'create') {
+      return modals.create;
+    } else if (modalIsOpen === 'delete') {
+      return modals.delete;
+    } else {
+      return;
+    }
+  };
+  function handleOverlayClose(e) {
+    if (e.target === e.currentTarget) {
+      toggleModal();
+    }
+  }
   function handleEscClose({ key }) {
     switch (key) {
       case 'Escape':
-        toggleModal()
-        break
+        toggleModal();
+        break;
     }
   }
 
-  //Кнопки слева от списка дел
-  function handleTodayClick() {
-    setTodayIsClicked(true)
-    setAllIsClicked(false)
-    setArrowsIsClicked(false)
-    setArrowsIsVisible('flex')
-    setTaskListIsVisible('none')
-  }
-  function handleVisibility(arg) {
-    if (arg === 'flex') {
-      return 'none'
-    } else {
-      return 'flex'
+  //Нажатие кнопок
+  const handleButtonClick = (button) => {
+    setButtonClick(button);
+    if (buttonClick === 'all') {
+      setButtonClick('today');
+      setDoneButtonClick(localStorage.getItem('doneButton'));
     }
-  }
-  function handleAllClick() {
-    setTodayIsClicked(false)
-    setAllIsClicked(true)
-    setAllIsClickedInner(!allIsClickedInner)
-    setArrowsIsClicked(false)
-    setArrowsIsVisible(handleVisibility(arrowsIsVisible))
-    setTaskListIsVisible(handleVisibility(taskListIsVisible))
-  }
-  function handleArrowsClick() {
-    setTodayIsClicked(false)
-    setAllIsClicked(false)
-    setArrowsIsClicked(true)
-  }
+  };
 
-  // Всплывающие кнопки
-  function handleFirstButtonClick() {
-    setFirstButton(backgroundColor)
-    setSecondButton('none')
-    setThirdButton('none')
-  }
-  function handleSecondButtonClick() {
-    setFirstButton('none')
-    setSecondButton(backgroundColor)
-    setThirdButton('none')
-  }
-  function handleThirdButtonClick() {
-    setFirstButton('none')
-    setSecondButton('none')
-    setThirdButton(backgroundColor)
-  }
+  const handleDoneClick = (button) => {
+    setDoneButtonClick(button);
+    localStorage.setItem('doneButton', doneButtonClick);
+  };
 
   //Добавление новых задач
-
-  function handleInputChange(e) {
-    setInputValue(e.target.value)
+  function newAddTask(name) {
+    const newTasks = [
+      ...tasks,
+      {
+        name: name,
+        date: new Date(),
+        done: false,
+      },
+    ];
+    setTasks(newTasks);
+    console.log(tasks);
   }
 
-  function handleFormSubmit() {
-    const date = new Date()
-    if (inputValue !== '' && tasks.length <= 10) {
-      const task = (
-        <Task
-          key={Math.random()}
-          deleteTask={() => setTasks(tasks.filter((el) => el.key !== task.key))}
-          taskTag={inputValue}
-          taskTime={`${date.getDate()} ${date.getMinutes()}`}
-          toggleModal={toggleModal('delete')}
-        />
-      )
-      console.log(tasks.map((el) => el))
-      setTasks([...tasks, task])
-      function deleteTask() {
-        tasks.filter((el) => {
-          console.log(el)
-        })
-      }
-    } else {
-      if (inputValue.length === 0) {
-        alert
-      }
-      return
-    }
+  function returnTasks() {
+    return tasks.map((task) => {
+      <Task
+        taskTag={task.name}
+        taskDate={task.date}
+        taskIsDone={task.done}
+        toggleModal={toggleModal}
+      ></Task>;
+    });
   }
+
+  // const [test, setTest] = useState({
+  //   dataSort: 'asc',
+  //   filter: 'all',
+  //   today: false,
+  // })
+
+  // useEffect(() => {
+  //   handleTasks()
+  // }, [tasks, test])
+
+  // const handleTasks = () => {
+  //   let sortedTasks = [...tasks]
+  //   if (doneButtonClick !== 'all-inner') {
+  //     oldTasks = sortedTasks.filter((task) =>
+  //       doneButtonClick === ' done' ? task.done === true : task.done === false
+  //     )
+  //   }
+  //   if (today) tasks.filter((task) => task.date <= today)
+  //   oldTasks.sort((a, b) =>
+  //     date === 'asc' ? a.date - b.date : b.date - a.date
+  //   )
+  //   setTasks(sortedTasks)
+  // }
+
+  // <Task
+  //   taskTag={userName}
+  //   taskTime={10:30}
+  // />
 
   return (
     <ToDoContainer>
@@ -220,65 +211,88 @@ export default function ToDo() {
         <AsideContainer id="modal">
           <AsideList>
             <AsideBlock
-              onClick={handleTodayClick}
-              active={todayIsClicked}
+              onClick={() => {
+                handleButtonClick('today');
+              }}
+              active={buttonClick === 'today'}
               type="button"
             >
               <AsideBlockImage
-                src={todayIsClicked ? 'calendar.svg' : 'greyCalendar.svg'}
+                src={
+                  buttonClick === 'today' ? 'calendar.svg' : 'greyCalendar.svg'
+                }
               ></AsideBlockImage>{' '}
               Today
             </AsideBlock>
             <AsideBlock
-              onClick={handleAllClick}
-              active={allIsClicked}
+              onClick={() => {
+                handleButtonClick('all');
+              }}
+              active={buttonClick === 'all'}
               type="button"
             >
               <AsideBlockImage
-                src={allIsClicked ? 'purpleCircle.svg' : 'doneSolid.svg'}
-              ></AsideBlockImage>{' '}
-              {allIsClickedInner ? 'Done' : 'All'}
+                src={
+                  buttonClick === 'all' ? 'purpleCircle.svg' : 'doneSolid.svg'
+                }
+              ></AsideBlockImage>
+              All
             </AsideBlock>
             <AsideBlock
-              onClick={handleArrowsClick}
-              active={arrowsIsClicked}
-              display={`${arrowsIsVisible}`}
+              onClick={() => {
+                handleButtonClick('date');
+              }}
+              active={buttonClick === 'date'}
+              display={buttonClick === 'all' ? 'none' : 'flex'}
+              type="button"
             >
               <AsideBlockImage
-                src={arrowsIsClicked ? 'arrowsPurple.svg' : 'arrows.svg'}
+                src={buttonClick === 'date' ? 'arrowsPurple.svg' : 'arrows.svg'}
               ></AsideBlockImage>
               Date
             </AsideBlock>
           </AsideList>
-          <CommunistAsideList display={`${taskListIsVisible}`}>
+          <CommunistAsideList display={buttonClick === 'all' ? 'flex' : 'none'}>
             <CommunistAsideBlock
-              active={allIsClicked}
+              active={doneButtonClick === 'all-inner'}
               type="button"
-              backgroundColor={firstButton}
-              onClick={handleFirstButtonClick}
+              backgroundColor={
+                doneButtonClick === 'all-inner' ? 'rgba(147, 51, 234, 0.2)' : ''
+              }
+              onClick={() => {
+                handleDoneClick('all-inner');
+              }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
             </CommunistAsideBlock>
             <CommunistAsideBlock
-              active={allIsClicked}
+              active={doneButtonClick === 'done'}
               type="button"
-              backgroundColor={secondButton}
-              onClick={handleSecondButtonClick}
+              backgroundColor={
+                doneButtonClick === 'done' ? 'rgba(147, 51, 234, 0.2)' : ''
+              }
+              onClick={() => {
+                handleDoneClick('done');
+              }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
             </CommunistAsideBlock>
             <CommunistAsideBlock
-              active={allIsClicked}
+              active={doneButtonClick === 'undone'}
               type="button"
-              backgroundColor={thirdButton}
-              onClick={handleThirdButtonClick}
+              backgroundColor={
+                doneButtonClick === 'undone' ? 'rgba(147, 51, 234, 0.2)' : ''
+              }
+              onClick={() => {
+                handleDoneClick('undone');
+              }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
             </CommunistAsideBlock>
           </CommunistAsideList>
           <AsideBlockTask
             onClick={() => {
-              toggleModal('create')
+              toggleModal('create');
             }}
           >
             <AsideBlockTaskInnerBox>
@@ -287,9 +301,9 @@ export default function ToDo() {
             </AsideBlockTaskInnerBox>
           </AsideBlockTask>
         </AsideContainer>
-        <BottomBlockContainer>{tasks}</BottomBlockContainer>
+        <BottomBlockContainer>{returnTasks()}</BottomBlockContainer>
       </BottomContainer>
       {returnModal()}
     </ToDoContainer>
-  )
+  );
 }

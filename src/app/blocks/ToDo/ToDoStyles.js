@@ -111,6 +111,7 @@ export const CommunistAsideList = styled.div`
   transition: 0.1s;
   display: ${(props) => props.display};
   flex-direction: column;
+  margin-bottom: 70px;
 `
 
 export const CommunistAsideBlock = styled(AsideBlock)`

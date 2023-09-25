@@ -19,6 +19,9 @@ export default function ModalWindow({
   overlayClick,
   onEscPress,
   poly,
+  addTask,
+  inputValue,
+  handleInputChange,
 }) {
   useEffect(() => {
     document.addEventListener('keydown', onEscPress)
@@ -36,13 +39,22 @@ export default function ModalWindow({
           {poly === 'create' ? 'Create task' : 'Delete task'}
         </ModalHeader>
         {poly === 'create' ? (
-          <ModalInput placeholder="Enter text..." />
+          <ModalInput
+            onChange={(e) => {
+              handleInputChange(e)
+            }}
+            placeholder="Enter text..."
+          />
         ) : (
           <ModalMessage>Are you sure about deleting this task?</ModalMessage>
         )}
         <ModalBox>
           {poly === 'create' ? (
-            <ModalLittleBox>
+            <ModalLittleBox
+              onClick={() => {
+                addTask(inputValue)
+              }}
+            >
               <ModalSigns src="doneGreen.svg" />
               <SaveButton>Save</SaveButton>
             </ModalLittleBox>
