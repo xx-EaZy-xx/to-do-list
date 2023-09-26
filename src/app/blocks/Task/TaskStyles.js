@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const SupremeTaskBox = styled.li`
+export const SupremeTaskBox = styled.div`
   padding: 0;
   margin: 0;
   display: flex;
@@ -17,6 +17,7 @@ export const SupremeTaskBox = styled.li`
 
 export const MainTaskBox = styled.div`
   width: 100%;
+  height: 100%;
   background-color: rgba(147, 51, 234, 0.06);
   justify-content: space-between;
   margin: 7px auto 0 auto;
@@ -58,6 +59,11 @@ export const ButtonBox = styled.button`
   border: none;
   background: transparent;
   margin-left: 11px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin-right: 20px;
+  padding: 0;
 `;
 
 export const TaskImage = styled.img`
@@ -65,7 +71,6 @@ export const TaskImage = styled.img`
   height: 18px;
   contain: cover;
   align-self: center;
-  margin-right: 20px;
   transition: 0.1s;
 
   &:hover {

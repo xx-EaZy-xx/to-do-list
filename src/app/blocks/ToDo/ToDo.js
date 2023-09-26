@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   ToDoContainer,
   TopContainer,
@@ -16,34 +16,35 @@ import {
   BottomBlockContainer,
   CommunistAsideList,
   CommunistAsideBlock,
-} from './ToDoStyles';
-import Task from '../Task/Task';
-import ModalWindow from '../ModalWindow/ModalWindow';
+} from './ToDoStyles'
+import Task from '../Task/Task'
+import ModalWindow from '../ModalWindow/ModalWindow'
 
 export default function ToDo() {
   //Имя пользователя
-  const [userName, setUserName] = useState('UserName');
-  //Массив тасок
+  const [userName, setUserName] = useState('UserName')
+  //Тестовый массив тасок
   const [tasks, setTasks] = useState([
     {
       name: 'fuck1',
-      date: `1695660611586`,
+      date: new Date(2023, 1, 1, 10, 10, 40, 567),
+      key: '1695660611586',
       done: false,
     },
     {
       name: 'fuck2',
-      date: `1695660711586`,
+      date: new Date(2023, 10, 20, 20, 20, 40, 567),
+      key: '1695660711586',
       done: false,
     },
-  ]);
-
-  const [inputValue, setInputValue] = useState('');
+  ])
   //Модальные окна
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  //Сохранение значения инпута модалки создания тасок
+  const [inputValue, setInputValue] = useState('')
   //Боковые кнопки
-  const [buttonClick, setButtonClick] = useState('today');
-  const [doneButtonClick, setDoneButtonClick] = useState('all-inner');
+  const [buttonClick, setButtonClick] = useState('today')
+  const [doneButtonClick, setDoneButtonClick] = useState('all-inner')
 
   //{modalIsOpen === 'create'? modals.create : modals.delete}
 
@@ -81,7 +82,7 @@ export default function ToDo() {
   //Открытие/закрытие модалки
 
   function handleInputChange(e) {
-    setInputValue(e.target.value);
+    setInputValue(e.target.value)
   }
 
   const modals = {
@@ -106,47 +107,47 @@ export default function ToDo() {
         poly={'delete'}
       />
     ),
-  };
+  }
   function toggleModal(arg) {
-    setModalIsOpen(arg);
+    setModalIsOpen(arg)
   }
   const returnModal = () => {
     if (modalIsOpen === 'create') {
-      return modals.create;
+      return modals.create
     } else if (modalIsOpen === 'delete') {
-      return modals.delete;
+      return modals.delete
     } else {
-      return;
+      return
     }
-  };
+  }
   function handleOverlayClose(e) {
     if (e.target === e.currentTarget) {
-      toggleModal();
+      toggleModal()
     }
   }
   function handleEscClose({ key }) {
     switch (key) {
       case 'Escape':
-        toggleModal();
+        toggleModal()
       case 'Enter':
-        newAddTask(inputValue);
-        break;
+        newAddTask(inputValue)
+        break
     }
   }
 
   //Нажатие кнопок
   const handleButtonClick = (button) => {
-    setButtonClick(button);
+    setButtonClick(button)
     if (buttonClick === 'all') {
-      setButtonClick('today');
-      setDoneButtonClick(localStorage.getItem('doneButton'));
+      setButtonClick('today')
+      setDoneButtonClick(localStorage.getItem('doneButton'))
     }
-  };
+  }
 
   const handleDoneClick = (button) => {
-    setDoneButtonClick(button);
-    localStorage.setItem('doneButton', doneButtonClick);
-  };
+    setDoneButtonClick(button)
+    localStorage.setItem('doneButton', doneButtonClick)
+  }
 
   //Добавление новых задач
   function newAddTask(name) {
@@ -154,12 +155,13 @@ export default function ToDo() {
       ...tasks,
       {
         name: name,
-        date: +Date.now(),
+        key: +Date.now(),
+        date: new Date(),
         done: false,
       },
-    ];
-    setTasks(newTasks);
-    console.log(tasks);
+    ]
+    setTasks(newTasks)
+    console.log(tasks)
   }
 
   // const [test, setTest] = useState({
@@ -203,7 +205,7 @@ export default function ToDo() {
           <AsideList>
             <AsideBlock
               onClick={() => {
-                handleButtonClick('today');
+                handleButtonClick('today')
               }}
               active={buttonClick === 'today'}
               type="button"
@@ -217,7 +219,7 @@ export default function ToDo() {
             </AsideBlock>
             <AsideBlock
               onClick={() => {
-                handleButtonClick('all');
+                handleButtonClick('all')
               }}
               active={buttonClick === 'all'}
               type="button"
@@ -231,7 +233,7 @@ export default function ToDo() {
             </AsideBlock>
             <AsideBlock
               onClick={() => {
-                handleButtonClick('date');
+                handleButtonClick('date')
               }}
               active={buttonClick === 'date'}
               display={buttonClick === 'all' ? 'none' : 'flex'}
@@ -251,7 +253,7 @@ export default function ToDo() {
                 doneButtonClick === 'all-inner' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('all-inner');
+                handleDoneClick('all-inner')
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
@@ -263,7 +265,7 @@ export default function ToDo() {
                 doneButtonClick === 'done' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('done');
+                handleDoneClick('done')
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
@@ -275,7 +277,7 @@ export default function ToDo() {
                 doneButtonClick === 'undone' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('undone');
+                handleDoneClick('undone')
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
@@ -283,7 +285,7 @@ export default function ToDo() {
           </CommunistAsideList>
           <AsideBlockTask
             onClick={() => {
-              toggleModal('create');
+              toggleModal('create')
             }}
           >
             <AsideBlockTaskInnerBox>
@@ -295,7 +297,8 @@ export default function ToDo() {
         <BottomBlockContainer>
           {tasks.map((task) => (
             <Task
-              key={task.date}
+              key={task.key}
+              taskDate={task.date}
               taskTag={task.name}
               taskIsDone={task.done}
               toggleModal={toggleModal}
@@ -305,5 +308,5 @@ export default function ToDo() {
       </BottomContainer>
       {returnModal()}
     </ToDoContainer>
-  );
+  )
 }
