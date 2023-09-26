@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react'
 import {
   ModalBackground,
   ModalContainer,
@@ -11,7 +11,7 @@ import {
   ModalSigns,
   ModalInput,
   ModalMessage,
-} from './ModalWindowStyles';
+} from './ModalWindowStyles'
 
 export default function ModalWindow({
   $isOpen,
@@ -20,13 +20,15 @@ export default function ModalWindow({
   onEscPress,
   poly,
   addTask,
+  deleteTask,
   inputValue,
   handleInputChange,
+  taskKey,
 }) {
   useEffect(() => {
-    document.addEventListener('keydown', onEscPress);
-    return () => document.removeEventListener('keydown', onEscPress);
-  });
+    document.addEventListener('keydown', onEscPress)
+    return () => document.removeEventListener('keydown', onEscPress)
+  })
 
   return (
     <ModalBackground
@@ -41,7 +43,7 @@ export default function ModalWindow({
         {poly === 'create' ? (
           <ModalInput
             onChange={(e) => {
-              handleInputChange(e);
+              handleInputChange(e)
             }}
             placeholder="Enter text..."
           />
@@ -52,14 +54,18 @@ export default function ModalWindow({
           {poly === 'create' ? (
             <ModalLittleBox
               onClick={() => {
-                addTask(inputValue);
+                addTask(inputValue)
               }}
             >
               <ModalSigns src="doneGreen.svg" />
               <SaveButton>Save</SaveButton>
             </ModalLittleBox>
           ) : (
-            <ModalLittleBox>
+            <ModalLittleBox
+              onClick={() => {
+                deleteTask()
+              }}
+            >
               <ModalSigns src="trash.svg" />
               <DeleteButton>Delete</DeleteButton>
             </ModalLittleBox>
@@ -71,5 +77,5 @@ export default function ModalWindow({
         </ModalBox>
       </ModalContainer>
     </ModalBackground>
-  );
+  )
 }

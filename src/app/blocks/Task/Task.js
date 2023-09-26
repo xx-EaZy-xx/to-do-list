@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   SupremeTaskBox,
   MainTaskBox,
@@ -8,15 +8,29 @@ import {
   TaskImageLeft,
   LittleBox,
   LittleBoxLeft,
+  TaskInput,
 } from './TaskStyles'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function Task({ taskTag, taskDate, toggleModal }) {
+export default function Task({ taskKey, taskTag, taskDate, toggleModal }) {
   const [taskStatus, setTaskStatus] = useState(false)
   const [arePointsPushed, setArePointsPushed] = useState(false)
+  const [inputIsFocused, setInputIsFocused] = useState(false)
+
+  const inputRef = useRef(null)
 
   function handlePush(state, setState) {
     setState(!state)
+  }
+
+  function handleInputFocused() {
+    if (inputIsFocused === false) {
+      inputRef.current.focus()
+      setInputIsFocused(true)
+    } else {
+      inputRef.current.blur()
+      setInputIsFocused(false)
+    }
   }
 
   function handleData() {
@@ -39,7 +53,10 @@ export default function Task({ taskTag, taskDate, toggleModal }) {
         return 'Saturday'
       }
     }
-    return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${taskDate.getMinutes()}`
+    const isSingle =
+      Array.from(String(taskDate.getMinutes())).length === 1 ? '0' : ''
+
+    return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${isSingle}${taskDate.getMinutes()}`
   }
 
   // function filterTodayTasks() {
@@ -61,7 +78,20 @@ export default function Task({ taskTag, taskDate, toggleModal }) {
           ></TaskImage>
         </ButtonBox>
         <TaskBox>
-          <LittleBox>{taskTag}</LittleBox>
+          <LittleBox>
+            <TaskInput
+              ref={inputRef}
+              placeholder={taskTag}
+              backgroundColor={inputIsFocused ? 'white' : 'transparent'}
+              border={inputIsFocused ? '1px solid blue' : 'none'}
+              onFocus={() => {
+                handleInputFocused()
+              }}
+              onBlur={() => {
+                handleInputFocused()
+              }}
+            ></TaskInput>
+          </LittleBox>
           <LittleBoxLeft>
             {handleData()}
             <ButtonBox
@@ -77,7 +107,15 @@ export default function Task({ taskTag, taskDate, toggleModal }) {
           </LittleBoxLeft>
         </TaskBox>
       </MainTaskBox>
-      {arePointsPushed ? <TaskEdition toggleModal={toggleModal} /> : ''}
+      {arePointsPushed ? (
+        <TaskEdition
+          toggleModal={toggleModal}
+          taskKey={taskKey}
+          focusInput={handleInputFocused}
+        />
+      ) : (
+        ''
+      )}
     </SupremeTaskBox>
   )
 }

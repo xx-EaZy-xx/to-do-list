@@ -9,6 +9,7 @@ export const ModalBackground = styled.div`
   left: 0px;
   visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
   transition: 0;
+  z-index: 2;
 `
 
 export const ModalContainer = styled.div`
@@ -24,7 +25,6 @@ export const ModalContainer = styled.div`
   border-radius: 10px;
   margin: auto;
   margin-top: 30vh;
-
 `
 
 export const CloseButton = styled.div`

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const SupremeTaskBox = styled.div`
   padding: 0;
@@ -7,13 +7,13 @@ export const SupremeTaskBox = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 33px;
+  min-height: 33px;
   margin: 7px auto 0 auto;
   width: 92%;
   &:first-of-type {
     margin-top: 31px;
   }
-`;
+`
 
 export const MainTaskBox = styled.div`
   width: 100%;
@@ -33,7 +33,7 @@ export const MainTaskBox = styled.div`
     background-color: rgba(146, 51, 234, 0.135);
     transition: 0.3s;
   }
-`;
+`
 
 export const TaskBox = styled.div`
   display: flex;
@@ -43,16 +43,17 @@ export const TaskBox = styled.div`
   min-height: 0;
   outline: none;
   border: none;
+  height: 33px;
   width: 100%;
   background: transparent;
-`;
+`
 
 export const LittleBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin: auto 16px auto 0px;
-`;
+`
 
 export const ButtonBox = styled.button`
   cursor: pointer;
@@ -64,7 +65,7 @@ export const ButtonBox = styled.button`
   width: fit-content;
   margin-right: 20px;
   padding: 0;
-`;
+`
 
 export const TaskImage = styled.img`
   width: 18px;
@@ -84,7 +85,7 @@ export const TaskImage = styled.img`
     transition: 0.1s;
     opacity: 1;
   }
-`;
+`
 
 export const TaskImageLeft = styled.img`
   margin-right: 0;
@@ -96,9 +97,23 @@ export const TaskImageLeft = styled.img`
     transition: 0.3s;
     transform: scale(1.1);
   }
-`;
+`
 
 export const LittleBoxLeft = styled(LittleBox)`
   color: rgb(107, 114, 128);
   font-size: 14px;
-`;
+`
+
+export const TaskInput = styled.input`
+  outline: none;
+  background-color: transparent;
+  border-radius: 2px;
+  border: none;
+  background-color: ${(props) => props.backgroundColor};
+  border: ${(props) => props.border};
+
+  &::placeholder {
+    color: black;
+    opacity: 1;
+  }
+`

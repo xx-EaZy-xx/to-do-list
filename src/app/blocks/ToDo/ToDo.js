@@ -89,7 +89,7 @@ export default function ToDo() {
         poly={'create'}
         inputValue={inputValue}
         handleInputChange={handleInputChange}
-        addTask={newAddTask}
+        addTask={insertInputValue}
       />
     ),
     delete: (
@@ -99,11 +99,18 @@ export default function ToDo() {
         overlayClick={handleOverlayClose}
         onEscPress={handleEscClose}
         poly={'delete'}
+        deleteTask={deleteTask}
       />
     ),
   }
+
+  function deleteTask() {
+    console.log('delete')
+  }
+
   function toggleModal(arg) {
     setModalIsOpen(arg)
+    setInputValue('')
   }
   const returnModal = () => {
     if (modalIsOpen === 'create') {
@@ -114,6 +121,15 @@ export default function ToDo() {
       return
     }
   }
+
+  function insertInputValue() {
+    if (inputValue !== '') {
+      newAddTask(inputValue)
+    } else {
+      return
+    }
+  }
+
   function handleOverlayClose(e) {
     if (e.target === e.currentTarget) {
       toggleModal()
@@ -124,7 +140,7 @@ export default function ToDo() {
       case 'Escape':
         toggleModal()
       case 'Enter':
-        newAddTask(inputValue)
+        insertInputValue()
         break
     }
   }
@@ -154,7 +170,6 @@ export default function ToDo() {
       },
     ]
     setTasks(newTasks)
-    console.log(tasks)
   }
 
   // const [test, setTest] = useState({
