@@ -11,16 +11,12 @@ import {
 } from './TaskStyles'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
-  const [isTaskPushed, setIsTaskPushed] = useState(false)
-  const [isCheckPushed, setIsCheckPushed] = useState(false)
+export default function Task({ taskTag, taskDate, toggleModal }) {
+  const [taskStatus, setTaskStatus] = useState(false)
+  const [arePointsPushed, setArePointsPushed] = useState(false)
 
-  function handleTaskPush() {
-    setIsTaskPushed(!isTaskPushed)
-  }
-
-  function handleCheckPush() {
-    setIsCheckPushed(!isCheckPushed)
+  function handlePush(state, setState) {
+    setState(!state)
   }
 
   function handleData() {
@@ -46,13 +42,21 @@ export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
     return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${taskDate.getMinutes()}`
   }
 
+  // function filterTodayTasks() {
+  //   if (taskDate.getDay() === new Date().getDay()) {
+  //     return 'Today'
+  //   }
+  // }
+
   return (
     <SupremeTaskBox>
       <MainTaskBox>
         <ButtonBox>
           <TaskImage
-            onClick={handleCheckPush}
-            src={isCheckPushed ? 'done.svg' : 'doneGrey.svg'}
+            onClick={() => {
+              handlePush(taskStatus, setTaskStatus)
+            }}
+            src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
             alt="кнопка завершить задачу - галочка"
           ></TaskImage>
         </ButtonBox>
@@ -60,7 +64,11 @@ export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
           <LittleBox>{taskTag}</LittleBox>
           <LittleBoxLeft>
             {handleData()}
-            <ButtonBox onClick={handleTaskPush}>
+            <ButtonBox
+              onClick={() => {
+                handlePush(arePointsPushed, setArePointsPushed)
+              }}
+            >
               <TaskImageLeft
                 src="points.svg"
                 alt="кнопка ещё - 3 точки"
@@ -69,7 +77,7 @@ export default function Task({ taskTag, taskDate, taskIsDone, toggleModal }) {
           </LittleBoxLeft>
         </TaskBox>
       </MainTaskBox>
-      {isTaskPushed ? <TaskEdition toggleModal={toggleModal} /> : ''}
+      {arePointsPushed ? <TaskEdition toggleModal={toggleModal} /> : ''}
     </SupremeTaskBox>
   )
 }

@@ -156,3 +156,10 @@ export const AsideBlockImageCentered = styled(AsideBlockImage)`
   margin: 0;
   margin-right: 12px;
 `
+
+export const VanishingMessage = styled.p`
+  width: fit-content;
+  margin: 20px auto 0 auto;
+  font-size: 20px;
+  color: grey;
+`

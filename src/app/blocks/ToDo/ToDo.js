@@ -16,27 +16,21 @@ import {
   BottomBlockContainer,
   CommunistAsideList,
   CommunistAsideBlock,
+  VanishingMessage,
 } from './ToDoStyles'
 import Task from '../Task/Task'
 import ModalWindow from '../ModalWindow/ModalWindow'
 
 export default function ToDo() {
-  //Имя пользователя
+  //Имя пользователя - позже будет приходить с сервера
   const [userName, setUserName] = useState('UserName')
-  //Тестовый массив тасок
+  //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([
-    {
-      name: 'fuck1',
-      date: new Date(2023, 1, 1, 10, 10, 40, 567),
-      key: '1695660611586',
-      done: false,
-    },
-    {
-      name: 'fuck2',
-      date: new Date(2023, 10, 20, 20, 20, 40, 567),
-      key: '1695660711586',
-      done: false,
-    },
+    // {
+    //   name: 'fuck 1',
+    //   date: new Date(2023, 1, 1, 10, 10, 40, 567),
+    //   key: Date.now(),
+    // },
   ])
   //Модальные окна
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -157,7 +151,6 @@ export default function ToDo() {
         name: name,
         key: +Date.now(),
         date: new Date(),
-        done: false,
       },
     ]
     setTasks(newTasks)
@@ -295,12 +288,16 @@ export default function ToDo() {
           </AsideBlockTask>
         </AsideContainer>
         <BottomBlockContainer>
+          {tasks.length === 0 ? (
+            <VanishingMessage>Here lie thy tasks</VanishingMessage>
+          ) : (
+            ''
+          )}
           {tasks.map((task) => (
             <Task
               key={task.key}
               taskDate={task.date}
               taskTag={task.name}
-              taskIsDone={task.done}
               toggleModal={toggleModal}
             ></Task>
           ))}
