@@ -12,7 +12,7 @@ export const EditBox = styled.div`
   height: 24px;
   margin: 0 22px 14px auto;
   transition: 0.1s;
-  z-index: 1;
+  z-index: 3;
 
   &:nth-last-of-type(1) {
     margin-bottom: 0;

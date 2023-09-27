@@ -17,6 +17,10 @@ export const TopContainer = styled.section`
   border-radius: 10px;
   margin: auto 90px 31px auto;
   align-items: center;
+
+  @media (max-width: 1268px) {
+    margin: 0 0 16px 0;
+  }
 `
 
 export const ToDoCell = styled.div`

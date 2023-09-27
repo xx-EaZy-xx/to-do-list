@@ -23,6 +23,10 @@ export const Title = styled.h1`
       1px 6px 0 rgba(64, 64, 64, 0.1), 1px 7px 0 rgba(64, 64, 64, 0.1),
       1px 8px 0 rgba(64, 64, 64, 0.1), 5px 13px 15px rgba(64, 64, 64, 0.1);
   }
+  @media (max-width: 1268px) {
+    margin-left: 0;
+    font-size: 76px;
+  }
 `
 
 export const TitlePurple = styled(Title)`

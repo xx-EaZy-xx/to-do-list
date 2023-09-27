@@ -112,7 +112,7 @@ export const ModalInput = styled.input`
   font-size: 16px;
 
   &:focus {
-    border: 1px lightskyblue solid;
+    border: 2px lightskyblue solid;
   }
 `
 export const ModalMessage = styled.h3`

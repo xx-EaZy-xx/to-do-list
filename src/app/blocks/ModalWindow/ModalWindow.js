@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   ModalBackground,
   ModalContainer,
@@ -14,27 +14,56 @@ import {
 } from './ModalWindowStyles'
 
 export default function ModalWindow({
-  $isOpen,
-  isToggled,
-  overlayClick,
-  onEscPress,
+  isOpen,
+  setIsOpen,
   poly,
   addTask,
-  deleteTask,
   inputValue,
   handleInputChange,
   taskKey,
+  deleteTask,
 }) {
+  const modalInput = useRef(null)
+
+  function handleOverlayClose(e) {
+    if (e.target === e.currentTarget) {
+      setIsOpen(false)
+    }
+  }
+
+  function handleEscClose({ key }) {
+    switch (key) {
+      case 'Escape':
+        setIsOpen(false)
+      case 'Enter':
+        if (!!addTask) {
+          addTask()
+        }
+        if (!!deleteTask) {
+          deleteTask()
+        }
+    }
+  }
+
   useEffect(() => {
-    document.addEventListener('keydown', onEscPress)
-    return () => document.removeEventListener('keydown', onEscPress)
+    document.addEventListener('keydown', handleEscClose)
+    return () => {
+      document.removeEventListener('keydown', handleEscClose)
+    }
   })
+  useEffect(() => {
+    if (modalInput.current) {
+      modalInput.current.focus()
+    }
+  }, [isOpen])
 
   return (
     <ModalBackground
-      visible={!!$isOpen}
+      visible={isOpen}
       id="background"
-      onMouseDown={overlayClick}
+      onClick={(e) => {
+        handleOverlayClose(e)
+      }}
     >
       <ModalContainer>
         <ModalHeader>
@@ -42,6 +71,8 @@ export default function ModalWindow({
         </ModalHeader>
         {poly === 'create' ? (
           <ModalInput
+            ref={modalInput}
+            value={inputValue}
             onChange={(e) => {
               handleInputChange(e)
             }}
@@ -63,14 +94,18 @@ export default function ModalWindow({
           ) : (
             <ModalLittleBox
               onClick={() => {
-                deleteTask()
+                deleteTask(taskKey)
               }}
             >
               <ModalSigns src="trash.svg" />
               <DeleteButton>Delete</DeleteButton>
             </ModalLittleBox>
           )}
-          <ModalLittleBox onClick={isToggled}>
+          <ModalLittleBox
+            onClick={() => {
+              setIsOpen()
+            }}
+          >
             <ModalSigns src="cross.svg" />
             <CloseButton>Close</CloseButton>
           </ModalLittleBox>

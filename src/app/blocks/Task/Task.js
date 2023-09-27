@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   SupremeTaskBox,
   MainTaskBox,
@@ -12,24 +12,58 @@ import {
 } from './TaskStyles'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
-export default function Task({ taskKey, taskTag, taskDate, toggleModal }) {
+export default function Task({
+  taskKey,
+  taskTag,
+  taskDate,
+  deleteTask,
+  returnDeleteModal,
+  modalDeleteIsOpen,
+  setModalDeleteIsOpen,
+}) {
   const [taskStatus, setTaskStatus] = useState(false)
   const [arePointsPushed, setArePointsPushed] = useState(false)
   const [inputIsFocused, setInputIsFocused] = useState(false)
+  const [inputValue, setInputValue] = useState('')
 
   const inputRef = useRef(null)
+
+  function handleInput(e) {
+    setInputValue(e.target.value)
+  }
 
   function handlePush(state, setState) {
     setState(!state)
   }
 
-  function handleInputFocused() {
+  function handleInputFocused({ key }) {
     if (inputIsFocused === false) {
       inputRef.current.focus()
       setInputIsFocused(true)
     } else {
       inputRef.current.blur()
       setInputIsFocused(false)
+    }
+    switch (key) {
+      case 'Escape':
+        inputRef.current.blur()
+        setInputIsFocused(false)
+      case 'Enter':
+        inputRef.current.blur()
+        setInputIsFocused(false)
+        break
+    }
+  }
+
+  function handleKeyPress({ key }) {
+    switch (key) {
+      case 'Escape':
+        inputRef.current.blur()
+        setInputIsFocused(false)
+      case 'Enter':
+        inputRef.current.blur()
+        setInputIsFocused(false)
+        break
     }
   }
 
@@ -59,11 +93,10 @@ export default function Task({ taskKey, taskTag, taskDate, toggleModal }) {
     return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${isSingle}${taskDate.getMinutes()}`
   }
 
-  // function filterTodayTasks() {
-  //   if (taskDate.getDay() === new Date().getDay()) {
-  //     return 'Today'
-  //   }
-  // }
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress)
+    return () => document.removeEventListener('keydown', handleKeyPress)
+  })
 
   return (
     <SupremeTaskBox>
@@ -82,13 +115,18 @@ export default function Task({ taskKey, taskTag, taskDate, toggleModal }) {
             <TaskInput
               ref={inputRef}
               placeholder={taskTag}
+              value={inputValue}
               backgroundColor={inputIsFocused ? 'white' : 'transparent'}
               border={inputIsFocused ? '1px solid blue' : 'none'}
-              onFocus={() => {
-                handleInputFocused()
+              onFocus={(e) => {
+                handleInputFocused(e)
+                setInputValue(taskTag)
               }}
-              onBlur={() => {
-                handleInputFocused()
+              onBlur={(e) => {
+                handleInputFocused(e)
+              }}
+              onChange={(e) => {
+                handleInput(e)
               }}
             ></TaskInput>
           </LittleBox>
@@ -109,9 +147,12 @@ export default function Task({ taskKey, taskTag, taskDate, toggleModal }) {
       </MainTaskBox>
       {arePointsPushed ? (
         <TaskEdition
-          toggleModal={toggleModal}
           taskKey={taskKey}
           focusInput={handleInputFocused}
+          deleteTask={deleteTask}
+          returnDeleteModal={returnDeleteModal}
+          modalDeleteIsOpen={modalDeleteIsOpen}
+          setModalDeleteIsOpen={setModalDeleteIsOpen}
         />
       ) : (
         ''

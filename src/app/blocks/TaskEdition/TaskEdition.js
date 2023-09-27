@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import { EditBox, EditImage, EditButtonBox } from './TaskEditionStyles'
 
-export default function TaskEdition({ toggleModal, taskKey, focusInput }) {
+export default function TaskEdition({
+  taskKey,
+  focusInput,
+  returnDeleteModal,
+  modalDeleteIsOpen,
+  setModalDeleteIsOpen,
+}) {
+  const modal = returnDeleteModal(taskKey)
+
   return (
     <EditBox>
       <EditButtonBox type="button">
@@ -14,12 +22,13 @@ export default function TaskEdition({ toggleModal, taskKey, focusInput }) {
       <EditButtonBox type="button">
         <EditImage
           onClick={() => {
-            toggleModal('delete', taskKey)
+            setModalDeleteIsOpen(true)
           }}
           alt="кнопка удаления задачи"
           src="trash.svg"
         />
       </EditButtonBox>
+      {modalDeleteIsOpen ? modal : ''}
     </EditBox>
   )
 }

@@ -15,4 +15,8 @@ export const PrimeContainer = styled.main`
   margin: auto;
   justify-content: space-evenly;
   align-items: center;
+
+  @media (max-width: 1268px) {
+    flex-direction: column;
+  }
 `
