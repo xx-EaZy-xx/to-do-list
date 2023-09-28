@@ -107,10 +107,12 @@ export const LittleBoxLeft = styled(LittleBox)`
 export const TaskInput = styled.input`
   outline: none;
   background-color: transparent;
-  border-radius: 2px;
+  border-radius: 4px;
   border: none;
   background-color: ${(props) => props.backgroundColor};
   border: ${(props) => props.border};
+  border-color: rgba(146, 51, 234, 1);
+  transition: 0.1s;
 
   &::placeholder {
     color: black;

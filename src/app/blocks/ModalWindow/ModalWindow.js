@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   ModalBackground,
   ModalContainer,
@@ -24,6 +24,7 @@ export default function ModalWindow({
   deleteTask,
 }) {
   const modalInput = useRef(null)
+  const trashButton = useRef(null)
 
   function handleOverlayClose(e) {
     if (e.target === e.currentTarget) {
@@ -32,16 +33,23 @@ export default function ModalWindow({
   }
 
   function handleEscClose({ key }) {
-    switch (key) {
-      case 'Escape':
-        setIsOpen(false)
-      case 'Enter':
-        if (!!addTask) {
-          addTask()
-        }
-        if (!!deleteTask) {
-          deleteTask()
-        }
+    if (key === 'Enter' && !!deleteTask) {
+      deleteTask()
+      setIsOpen(false)
+      return
+    }
+    if (key === 'Escape' && !!deleteTask) {
+      setIsOpen(false)
+      return
+    }
+    if (key === 'Escape' && modalInput.current) {
+      modalInput.current.value = ''
+      return
+    }
+    if (key === 'Enter' && modalInput.current) {
+      if (!!addTask) {
+        addTask()
+      }
     }
   }
 
@@ -54,8 +62,9 @@ export default function ModalWindow({
   useEffect(() => {
     if (modalInput.current) {
       modalInput.current.focus()
+      // trashButton.current.unfocus
     }
-  }, [isOpen])
+  }, [isOpen, setIsOpen])
 
   return (
     <ModalBackground
@@ -93,6 +102,7 @@ export default function ModalWindow({
             </ModalLittleBox>
           ) : (
             <ModalLittleBox
+              ref={trashButton}
               onClick={() => {
                 deleteTask(taskKey)
               }}

@@ -20,15 +20,17 @@ export default function Task({
   returnDeleteModal,
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
+  done,
 }) {
   const [taskStatus, setTaskStatus] = useState(false)
+  const [taskVisible, setTaskVisible] = useState(true)
   const [arePointsPushed, setArePointsPushed] = useState(false)
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
 
   const inputRef = useRef(null)
 
-  function handleInput(e) {
+  function handleInputChange(e) {
     setInputValue(e.target.value)
   }
 
@@ -36,7 +38,16 @@ export default function Task({
     setState(!state)
   }
 
-  function handleInputFocused({ key }) {
+  function handleTaskDone() {
+    if (done) {
+      done = false
+    } else {
+      done = true
+    }
+    console.log(done)
+  }
+
+  function handleInputFocus() {
     if (inputIsFocused === false) {
       inputRef.current.focus()
       setInputIsFocused(true)
@@ -44,26 +55,18 @@ export default function Task({
       inputRef.current.blur()
       setInputIsFocused(false)
     }
-    switch (key) {
-      case 'Escape':
-        inputRef.current.blur()
-        setInputIsFocused(false)
-      case 'Enter':
-        inputRef.current.blur()
-        setInputIsFocused(false)
-        break
-    }
   }
 
   function handleKeyPress({ key }) {
-    switch (key) {
-      case 'Escape':
-        inputRef.current.blur()
-        setInputIsFocused(false)
-      case 'Enter':
-        inputRef.current.blur()
-        setInputIsFocused(false)
-        break
+    if (key === 'Escape') {
+      inputRef.current.blur()
+      setInputIsFocused(false)
+      return
+    }
+    if (key === 'Enter') {
+      inputRef.current.blur()
+      setInputIsFocused(false)
+      return
     }
   }
 
@@ -98,65 +101,75 @@ export default function Task({
     return () => document.removeEventListener('keydown', handleKeyPress)
   })
 
+  useEffect(() => {
+    setInputValue(taskTag)
+  }, [])
+
   return (
-    <SupremeTaskBox>
-      <MainTaskBox>
-        <ButtonBox>
-          <TaskImage
-            onClick={() => {
-              handlePush(taskStatus, setTaskStatus)
-            }}
-            src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
-            alt="кнопка завершить задачу - галочка"
-          ></TaskImage>
-        </ButtonBox>
-        <TaskBox>
-          <LittleBox>
-            <TaskInput
-              ref={inputRef}
-              placeholder={taskTag}
-              value={inputValue}
-              backgroundColor={inputIsFocused ? 'white' : 'transparent'}
-              border={inputIsFocused ? '1px solid blue' : 'none'}
-              onFocus={(e) => {
-                handleInputFocused(e)
-                setInputValue(taskTag)
-              }}
-              onBlur={(e) => {
-                handleInputFocused(e)
-              }}
-              onChange={(e) => {
-                handleInput(e)
-              }}
-            ></TaskInput>
-          </LittleBox>
-          <LittleBoxLeft>
-            {handleData()}
-            <ButtonBox
-              onClick={() => {
-                handlePush(arePointsPushed, setArePointsPushed)
-              }}
-            >
-              <TaskImageLeft
-                src="points.svg"
-                alt="кнопка ещё - 3 точки"
-              ></TaskImageLeft>
+    <>
+      {taskVisible ? (
+        <SupremeTaskBox>
+          <MainTaskBox>
+            <ButtonBox>
+              <TaskImage
+                onClick={() => {
+                  handlePush(taskStatus, setTaskStatus)
+                  handleTaskDone()
+                }}
+                src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
+                alt="кнопка завершить задачу - галочка"
+              ></TaskImage>
             </ButtonBox>
-          </LittleBoxLeft>
-        </TaskBox>
-      </MainTaskBox>
-      {arePointsPushed ? (
-        <TaskEdition
-          taskKey={taskKey}
-          focusInput={handleInputFocused}
-          deleteTask={deleteTask}
-          returnDeleteModal={returnDeleteModal}
-          modalDeleteIsOpen={modalDeleteIsOpen}
-          setModalDeleteIsOpen={setModalDeleteIsOpen}
-        />
+            <TaskBox>
+              <LittleBox>
+                <TaskInput
+                  type="text"
+                  pattern="^[^\s]+(\s.*)?$"
+                  ref={inputRef}
+                  value={inputValue}
+                  backgroundColor={inputIsFocused ? 'white' : 'transparent'}
+                  border={inputIsFocused ? '1px solid blue' : 'none'}
+                  onFocus={(e) => {
+                    handleInputFocus(e)
+                  }}
+                  onBlur={(e) => {
+                    handleInputFocus(e)
+                  }}
+                  onChange={(e) => {
+                    handleInputChange(e)
+                  }}
+                ></TaskInput>
+              </LittleBox>
+              <LittleBoxLeft>
+                {handleData()}
+                <ButtonBox
+                  onClick={() => {
+                    handlePush(arePointsPushed, setArePointsPushed)
+                  }}
+                >
+                  <TaskImageLeft
+                    src="points.svg"
+                    alt="кнопка ещё - 3 точки"
+                  ></TaskImageLeft>
+                </ButtonBox>
+              </LittleBoxLeft>
+            </TaskBox>
+          </MainTaskBox>
+          {arePointsPushed ? (
+            <TaskEdition
+              focusInput={handleInputFocus}
+              deleteTask={deleteTask}
+              returnDeleteModal={returnDeleteModal(taskKey)}
+              modalDeleteIsOpen={modalDeleteIsOpen}
+              setModalDeleteIsOpen={setModalDeleteIsOpen}
+            />
+          ) : (
+            ''
+          )}
+        </SupremeTaskBox>
       ) : (
         ''
       )}
-    </SupremeTaskBox>
+    </>
   )
 }

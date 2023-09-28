@@ -9,7 +9,7 @@ export const ModalBackground = styled.div`
   left: 0px;
   visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
   transition: 0;
-  z-index: 2;
+  z-index: 11;
 `
 
 export const ModalContainer = styled.div`
