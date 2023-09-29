@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { PageContainer, PageButton } from './PaginationStyles'
 
-export default function Pagination({ tasks, setTasks }) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [currentPosts, setCurrentPosts] = useState([])
-  const [postsPerPage] = useState(10)
+export default function Pagination({ postsPerPage, totalPosts, paginate }) {
+  const [pageIsActive, setPageIsActive] = useState(false)
 
-  const paginate = (pageNumber) => {
-    const pageCount = Math.ceil(tasks.length / postsPerPage)
-    const indexOfLastPost = pageNumber * postsPerPage
-    const indexOfFirstPost = postsPerPage * (pageNumber - 1)
-    const currentPosts = tasks.slice(indexOfFirstPost, indexOfLastPost)
+  const pageCount = Math.ceil(totalPosts / postsPerPage)
+  const pageNumbers = Array.from({ length: pageCount }).map(
+    (el, index) => index + 1
+  )
 
-    setCurrentPosts(currentPosts)
-    setCurrentPage(pageCount < currentPage ? pageCount : pageNumber)
+  function handlePageIsActive() {
+    setPageIsActive(!pageIsActive)
   }
-
-  useEffect(() => {
-    paginate(currentPage)
-  }, [tasks])
 
   return (
     <PageContainer>
-      <PageButton
-        onClick={() => {
-          paginate(currentPage)
-        }}
-      >
-        {currentPage}
-      </PageButton>
+      {pageNumbers.map((number) => {
+        return (
+          <PageButton
+            key={number}
+            onClick={() => {
+              paginate(number)
+              handlePageIsActive()
+            }}
+            active={false}
+          >
+            {number}
+          </PageButton>
+        )
+      })}
     </PageContainer>
   )
 }

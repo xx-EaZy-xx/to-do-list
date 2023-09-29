@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { EditBox, EditImage, EditButtonBox } from './TaskEditionStyles'
 
 export default function TaskEdition({
@@ -8,7 +8,6 @@ export default function TaskEdition({
   setModalDeleteIsOpen,
 }) {
   const modal = returnDeleteModal
-  console.log(returnDeleteModal)
 
   return (
     <EditBox>

@@ -32,21 +32,21 @@ export default function ModalWindow({
     }
   }
 
-  function handleEscClose({ key }) {
-    if (key === 'Enter' && !!deleteTask) {
+  function handleEscClose(e) {
+    if (e.key === 'Enter' && !!deleteTask) {
       deleteTask()
       setIsOpen(false)
       return
     }
-    if (key === 'Escape' && !!deleteTask) {
+    if (e.key === 'Escape' && !!deleteTask) {
       setIsOpen(false)
       return
     }
-    if (key === 'Escape' && modalInput.current) {
+    if (e.key === 'Escape' && modalInput.current) {
       modalInput.current.value = ''
       return
     }
-    if (key === 'Enter' && modalInput.current) {
+    if (e.key === 'Enter' && modalInput.current) {
       if (!!addTask) {
         addTask()
       }
@@ -54,15 +54,11 @@ export default function ModalWindow({
   }
 
   useEffect(() => {
-    document.addEventListener('keydown', handleEscClose)
-    return () => {
-      document.removeEventListener('keydown', handleEscClose)
-    }
-  })
-  useEffect(() => {
     if (modalInput.current) {
       modalInput.current.focus()
-      // trashButton.current.unfocus
+    }
+    if (trashButton.current) {
+      trashButton.current.focus()
     }
   }, [isOpen, setIsOpen])
 
@@ -85,6 +81,9 @@ export default function ModalWindow({
             onChange={(e) => {
               handleInputChange(e)
             }}
+            onKeyDown={(e) => {
+              handleEscClose(e)
+            }}
             placeholder="Enter text..."
           />
         ) : (
@@ -106,6 +105,9 @@ export default function ModalWindow({
               onClick={() => {
                 deleteTask(taskKey)
               }}
+              onKeyDown={(e) => {
+                handleEscClose(e)
+              }}
             >
               <ModalSigns src="trash.svg" />
               <DeleteButton>Delete</DeleteButton>
@@ -114,6 +116,11 @@ export default function ModalWindow({
           <ModalLittleBox
             onClick={() => {
               setIsOpen()
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setIsOpen()
+              }
             }}
           >
             <ModalSigns src="cross.svg" />

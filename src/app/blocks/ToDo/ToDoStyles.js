@@ -3,6 +3,8 @@ import styled from 'styled-components'
 export const ToDoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 672px;
+  transition: transform 2s ease-in-out;
 `
 
 export const TopContainer = styled.section`
@@ -67,6 +69,7 @@ export const AsideContainer = styled.div`
   justify-content: space-between;
   font-size: 16px;
   line-height: 18.75px;
+  max-width: 185px;
   min-height: 312px;
 `
 

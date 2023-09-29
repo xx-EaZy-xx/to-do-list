@@ -27,6 +27,10 @@ export default function ToDo() {
   const [userName, setUserName] = useState('UserName')
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
+  const [currentTasks, setCurrentTasks] = useState([])
+  //Пагинация
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postsPerPage] = useState(7)
   //Модальные окна
   const [modalCreateIsOpen, setModalCreateIsOpen] = useState(false)
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false)
@@ -37,40 +41,31 @@ export default function ToDo() {
   const [doneButtonClick, setDoneButtonClick] = useState('All')
   //Сортировка тасок
   const [sortingVector, setSortingVector] = useState(false)
-  const [doneUndoneMode, setDoneUndoneMode] = useState('')
-  //Пагинация
-  const [currentPage, setCurrentPage] = useState(1)
-  const [currentPosts, setCurrentPosts] = useState([])
 
   // код Антона
-  //   const [isModalOpen, setIsModalOpen] = useState('delete')
-  //   const toggle = (data) => setIsModalOpen(data)
+  const [test, setTest] = useState({
+    dataSort: 'asc',
+    filter: 'all',
+    today: false,
+  })
 
-  //   <ModalWrapper $isVisible={!!isModalOpen} children={modals.isModalOpen} />
+  const handleTasks = () => {
+    let sortedTasks = [...tasks]
+    if (doneButtonClick !== 'All') {
+      sortedTasks = sortedTasks.filter((task) =>
+        doneButtonClick === ' Done' ? task.done === true : task.done === false
+      )
+    }
+    if (today) tasks.filter((task) => task.date <= today)
+    sortedTasks.sort((a, b) =>
+      date === 'asc' ? a.date - b.date : b.date - a.date
+    )
+    setTasks(sortedTasks)
+  }
 
-  //   const [test, setTest] = useState({
-  //     dataSort: 'asc',
-  //     filter: 'all',
-  //     today: false,
-  //   })
-
-  //   useEffect(() => {
-  //   handleTasks()
-  //   }, [tasks,test])
-
-  //   const handleTasks = () =>{
-  //     let sortedTasks = [...tasks]
-  //     if (status !== 'all') {
-  //       oldTasks = oldTasks.filter((task) =>
-  //         status === ' done' ? task.done === true : task.done === false
-  //       )
-  //     }
-  //     if (today) tasks.filter((task) => task.date <= today)
-  //     oldTasks.sort((a, b) =>
-  //       date === 'asc' ? a.date -   b.date : b.date - a.date
-  //     )
-  //   setTasks(sortedTasks)
-  //   }
+  useEffect(() => {
+    handleTasks()
+  }, [test, doneButtonClick])
   // код Антона
 
   //Сортировка тасок
@@ -130,8 +125,7 @@ export default function ToDo() {
   const handleButtonClick = (button) => {
     setButtonClick(button)
     if (buttonClick === 'all') {
-      setButtonClick('today')
-      setDoneButtonClick(doneButtonClick)
+      setButtonClick(doneButtonClick)
     }
   }
   const handleDoneClick = (button) => {
@@ -149,6 +143,7 @@ export default function ToDo() {
         done: false,
       },
     ]
+
     setTasks(newTasks)
   }
 
@@ -171,20 +166,25 @@ export default function ToDo() {
   }
 
   //Пагинация
-
-  function consoleLog() {
-    console.log(Math.ceil(tasks.length / 10))
+  const paginate = (pageNumber) => {
+    const pageCount = Math.ceil(tasks.length / postsPerPage)
+    const indexOfLastPost = pageNumber * postsPerPage
+    const indexOfFirstPost = postsPerPage * (pageNumber - 1)
+    const currentPosts = tasks.slice(indexOfFirstPost, indexOfLastPost)
+    setCurrentTasks(currentPosts)
+    setCurrentPage(pageCount < currentPage ? pageCount : pageNumber)
   }
+  useEffect(() => {
+    paginate(currentPage)
+    if (tasks.length > currentPage * postsPerPage) {
+      setCurrentTasks(tasks)
+      paginate(currentPage + 1)
+    }
+  }, [tasks])
 
-  function pagination() {
-    const paginatedArr = tasks.map((el) => {
-      return tasks.slice[(el * 10, el * 10 + 10)]
-    })
-  }
-
-  // useEffect(() => {
-  //   paginate(currentPage)
-  // }, [tasks])
+  useEffect(() => {
+    paginate(currentPage)
+  }, [sortingVector])
 
   return (
     <ToDoContainer>
@@ -197,8 +197,10 @@ export default function ToDo() {
         <AsideContainer id="modal">
           <AsideList>
             <AsideBlock
+              id="today"
               onClick={() => {
                 handleButtonClick('today')
+                console.log(buttonClick)
               }}
               active={buttonClick === 'today'}
               type="button"
@@ -211,24 +213,27 @@ export default function ToDo() {
               Today
             </AsideBlock>
             <AsideBlock
+              id="all"
               onClick={() => {
                 handleButtonClick('all')
               }}
-              active={buttonClick === 'all'}
+              active={buttonClick === 'all' || buttonClick === doneButtonClick}
               type="button"
             >
               <AsideBlockImage
                 src={
-                  buttonClick === 'all' ? 'purpleCircle.svg' : 'doneSolid.svg'
+                  buttonClick === 'all' || buttonClick === doneButtonClick
+                    ? 'purpleCircle.svg'
+                    : 'doneSolid.svg'
                 }
               ></AsideBlockImage>
               {doneButtonClick}
             </AsideBlock>
             <AsideBlock
+              id="date"
               onClick={() => {
                 handleButtonClick('date')
                 handleSortingByDate()
-                consoleLog()
               }}
               active={buttonClick === 'date'}
               display={buttonClick === 'all' ? 'none' : 'flex'}
@@ -242,6 +247,7 @@ export default function ToDo() {
           </AsideList>
           <CommunistAsideList display={buttonClick === 'all' ? 'flex' : 'none'}>
             <CommunistAsideBlock
+              id="All"
               active={doneButtonClick === 'All'}
               type="button"
               backgroundColor={
@@ -254,6 +260,7 @@ export default function ToDo() {
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
             </CommunistAsideBlock>
             <CommunistAsideBlock
+              id="Done"
               active={doneButtonClick === 'Done'}
               type="button"
               backgroundColor={
@@ -261,12 +268,12 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleDoneClick('Done')
-                doneSorting()
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
             </CommunistAsideBlock>
             <CommunistAsideBlock
+              id="Undone"
               active={doneButtonClick === 'Undone'}
               type="button"
               backgroundColor={
@@ -274,16 +281,10 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleDoneClick('Undone')
-                undoneSorting()
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
             </CommunistAsideBlock>
-            {tasks.length >= 10 ? (
-              <Pagination tasks={tasks} setTasks={setTasks} />
-            ) : (
-              ''
-            )}
           </CommunistAsideList>
           <AsideBlockTask
             onClick={() => {
@@ -302,20 +303,35 @@ export default function ToDo() {
           ) : (
             ''
           )}
-          {tasks.map((task) => (
-            <Task
-              key={task.key}
-              taskKey={task.key}
-              taskTag={task.name.trim()}
-              taskDate={task.date}
-              tasks={tasks}
-              deleteTask={deleteTask}
-              returnDeleteModal={returnDeleteModal}
-              modalDeleteIsOpen={modalDeleteIsOpen}
-              setModalDeleteIsOpen={setModalDeleteIsOpen}
-              done={task.done}
-            ></Task>
-          ))}
+          {tasks.length <= postsPerPage
+            ? tasks.map((task) => (
+                <Task
+                  key={task.key}
+                  taskKey={task.key}
+                  taskTag={task.name.trim()}
+                  taskDate={task.date}
+                  tasks={tasks}
+                  deleteTask={deleteTask}
+                  returnDeleteModal={returnDeleteModal}
+                  modalDeleteIsOpen={modalDeleteIsOpen}
+                  setModalDeleteIsOpen={setModalDeleteIsOpen}
+                  done={task.done}
+                ></Task>
+              ))
+            : currentTasks.map((task) => (
+                <Task
+                  key={task.key}
+                  taskKey={task.key}
+                  taskTag={task.name.trim()}
+                  taskDate={task.date}
+                  tasks={tasks}
+                  deleteTask={deleteTask}
+                  returnDeleteModal={returnDeleteModal}
+                  modalDeleteIsOpen={modalDeleteIsOpen}
+                  setModalDeleteIsOpen={setModalDeleteIsOpen}
+                  done={task.done}
+                ></Task>
+              ))}
         </BottomBlockContainer>
       </BottomContainer>
       <ModalWindow
@@ -326,6 +342,15 @@ export default function ToDo() {
         handleInputChange={handleInputChange}
         addTask={insertInputValue}
       />
+      {tasks.length <= postsPerPage ? (
+        ''
+      ) : (
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={tasks.length}
+          paginate={paginate}
+        />
+      )}
     </ToDoContainer>
   )
 }

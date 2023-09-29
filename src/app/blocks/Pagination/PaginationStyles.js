@@ -1,31 +1,48 @@
 import styled from 'styled-components'
 
-export const PageContainer = styled.div`
+export const PageContainer = styled.nav`
   display: flex;
-  max-width: 60px;
-  min-width: fit-content;
-  height: 18px;
+  width: fit-content;
+  max-width: 672px;
+  height: 50px;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: start;
   top: 30%;
   left: 70%;
-  right: auto;
   font-size: 16px;
   line-height: 16px;
-  background-color: rgba(147, 51, 234, 0.3);
+  background-color: rgba(146, 51, 234, 0.1);
   border-radius: 6px;
+  margin: 0;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: scroll;
+  align-items: center;
+  padding-top: 4px;
+  transition: 0.1s;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: rgba(146, 51, 234, 0.2);
+    transition: 0.1s;
+  }
 `
 
 export const PageButton = styled.button`
-  height: 10px;
-  width: 10px;
+  height: 100%;
   background: transparent;
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 0 8px;
-  text-align: center;
+  padding: 0 10px 10px 8px;
+  align-items: center;
   display: flex;
-  justify-content: center;
   text-decoration: underline;
+  transition: 0.1s;
+  color: ${(props) => (props.active ? 'white' : 'black')};
+
+  &:hover {
+    transition: 0.1s;
+    color: rgba(255, 255, 255, 0.8);
+  }
 `

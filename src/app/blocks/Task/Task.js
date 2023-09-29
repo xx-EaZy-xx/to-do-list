@@ -124,7 +124,6 @@ export default function Task({
               <LittleBox>
                 <TaskInput
                   type="text"
-                  pattern="^[^\s]+(\s.*)?$"
                   ref={inputRef}
                   value={inputValue}
                   backgroundColor={inputIsFocused ? 'white' : 'transparent'}
