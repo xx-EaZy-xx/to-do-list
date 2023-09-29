@@ -18,14 +18,14 @@ export default function TaskEdition({
           src="edit.svg"
         />
       </EditButtonBox>
-      <EditButtonBox type="button">
-        <EditImage
-          onClick={() => {
-            setModalDeleteIsOpen(true)
-          }}
-          alt="кнопка удаления задачи"
-          src="trash.svg"
-        />
+      <EditButtonBox
+        autoFocus
+        type="button"
+        onClick={() => {
+          setModalDeleteIsOpen(true)
+        }}
+      >
+        <EditImage alt="кнопка удаления задачи" src="trash.svg" />
       </EditButtonBox>
       {modalDeleteIsOpen ? modal : ''}
     </EditBox>

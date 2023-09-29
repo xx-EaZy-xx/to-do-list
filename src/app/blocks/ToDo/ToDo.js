@@ -52,52 +52,41 @@ export default function ToDo() {
   const handleTasks = () => {
     let sortedTasks = [...tasks]
     if (doneButtonClick !== 'All') {
-      sortedTasks = sortedTasks.filter((task) =>
-        doneButtonClick === ' Done' ? task.done === true : task.done === false
-      )
+      sortedTasks = sortedTasks.filter((task) => {
+        return doneButtonClick === 'Done'
+          ? task.done === true
+          : task.done === false
+      })
     }
-    if (today) tasks.filter((task) => task.date <= today)
-    sortedTasks.sort((a, b) =>
-      date === 'asc' ? a.date - b.date : b.date - a.date
-    )
+    //Осталось только найти способ поменять done/undone при нажатии на галочку внутри таски
+
+    //Сортировка по today
+    // if (buttonClick === 'today') {
+    //   return tasks.filter((task) => task.date <= today)
+    // }
+    console.log('sortedTasks:', sortedTasks)
     setTasks(sortedTasks)
+    setCurrentTasks(sortedTasks)
   }
 
   useEffect(() => {
     handleTasks()
-  }, [test, doneButtonClick])
+  }, [test, buttonClick, doneButtonClick])
   // код Антона
 
   //Сортировка тасок
   function handleSortingByDate() {
     setSortingVector(!sortingVector)
-    sorting(sortingVector)
-  }
-
-  function doneSorting() {
-    const doneTasks = tasks.filter((task) => {
-      return task.done !== false
-    })
-    console.log(doneTasks)
-    setTasks(doneTasks)
-  }
-
-  function undoneSorting() {
-    const undoneTasks = tasks.filter((task) => {
-      return task.done === false
-    })
-    console.log(undoneTasks)
-    setTasks(undoneTasks)
-  }
-
-  function sorting(arg) {
-    if (arg === false) {
-      const filteredTasks = tasks.sort((a, b) => (b.key > a.key ? 1 : -1))
-      setTasks(filteredTasks)
-    } else if (arg === true) {
-      const filteredTasks = tasks.sort((a, b) => (a.key > b.key ? 1 : -1))
-      setTasks(filteredTasks)
+    function sorting(arg) {
+      if (arg === false) {
+        const filteredTasks = tasks.sort((a, b) => (b.key > a.key ? 1 : -1))
+        setTasks(filteredTasks)
+      } else if (arg === true) {
+        const filteredTasks = tasks.sort((a, b) => (a.key > b.key ? 1 : -1))
+        setTasks(filteredTasks)
+      }
     }
+    sorting(sortingVector)
   }
 
   //Модальные окна

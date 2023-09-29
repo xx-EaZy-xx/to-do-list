@@ -22,29 +22,18 @@ export default function Task({
   setModalDeleteIsOpen,
   done,
 }) {
-  const [taskStatus, setTaskStatus] = useState(false)
-  const [taskVisible, setTaskVisible] = useState(true)
+  const [taskStatus, setTaskStatus] = useState(done)
   const [arePointsPushed, setArePointsPushed] = useState(false)
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
 
   const inputRef = useRef(null)
-
+  console.log(done)
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
-
   function handlePush(state, setState) {
     setState(!state)
-  }
-
-  function handleTaskDone() {
-    if (done) {
-      done = false
-    } else {
-      done = true
-    }
-    console.log(done)
   }
 
   function handleInputFocus() {
@@ -107,68 +96,65 @@ export default function Task({
 
   return (
     <>
-      {taskVisible ? (
-        <SupremeTaskBox>
-          <MainTaskBox>
-            <ButtonBox>
-              <TaskImage
-                onClick={() => {
-                  handlePush(taskStatus, setTaskStatus)
-                  handleTaskDone()
+      <SupremeTaskBox>
+        <MainTaskBox>
+          <ButtonBox>
+            <TaskImage
+              onClick={() => {
+                handlePush(taskStatus, setTaskStatus)
+                done = true
+                console.log(done)
+              }}
+              src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
+              alt="кнопка завершить задачу - галочка"
+            ></TaskImage>
+          </ButtonBox>
+          <TaskBox>
+            <LittleBox>
+              <TaskInput
+                type="text"
+                ref={inputRef}
+                value={inputValue}
+                backgroundColor={inputIsFocused ? 'white' : 'transparent'}
+                border={inputIsFocused ? '1px solid blue' : 'none'}
+                onFocus={(e) => {
+                  handleInputFocus(e)
                 }}
-                src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
-                alt="кнопка завершить задачу - галочка"
-              ></TaskImage>
-            </ButtonBox>
-            <TaskBox>
-              <LittleBox>
-                <TaskInput
-                  type="text"
-                  ref={inputRef}
-                  value={inputValue}
-                  backgroundColor={inputIsFocused ? 'white' : 'transparent'}
-                  border={inputIsFocused ? '1px solid blue' : 'none'}
-                  onFocus={(e) => {
-                    handleInputFocus(e)
-                  }}
-                  onBlur={(e) => {
-                    handleInputFocus(e)
-                  }}
-                  onChange={(e) => {
-                    handleInputChange(e)
-                  }}
-                ></TaskInput>
-              </LittleBox>
-              <LittleBoxLeft>
-                {handleData()}
-                <ButtonBox
-                  onClick={() => {
-                    handlePush(arePointsPushed, setArePointsPushed)
-                  }}
-                >
-                  <TaskImageLeft
-                    src="points.svg"
-                    alt="кнопка ещё - 3 точки"
-                  ></TaskImageLeft>
-                </ButtonBox>
-              </LittleBoxLeft>
-            </TaskBox>
-          </MainTaskBox>
-          {arePointsPushed ? (
-            <TaskEdition
-              focusInput={handleInputFocus}
-              deleteTask={deleteTask}
-              returnDeleteModal={returnDeleteModal(taskKey)}
-              modalDeleteIsOpen={modalDeleteIsOpen}
-              setModalDeleteIsOpen={setModalDeleteIsOpen}
-            />
-          ) : (
-            ''
-          )}
-        </SupremeTaskBox>
-      ) : (
-        ''
-      )}
+                onBlur={(e) => {
+                  handleInputFocus(e)
+                }}
+                onChange={(e) => {
+                  handleInputChange(e)
+                }}
+              ></TaskInput>
+            </LittleBox>
+            <LittleBoxLeft>
+              {handleData()}
+              <ButtonBox
+                onClick={() => {
+                  handlePush(arePointsPushed, setArePointsPushed)
+                }}
+              >
+                <TaskImageLeft
+                  src="points.svg"
+                  alt="кнопка ещё - 3 точки"
+                ></TaskImageLeft>
+              </ButtonBox>
+            </LittleBoxLeft>
+          </TaskBox>
+        </MainTaskBox>
+        {arePointsPushed ? (
+          <TaskEdition
+            focusInput={handleInputFocus}
+            deleteTask={deleteTask}
+            returnDeleteModal={returnDeleteModal(taskKey)}
+            modalDeleteIsOpen={modalDeleteIsOpen}
+            setModalDeleteIsOpen={setModalDeleteIsOpen}
+          />
+        ) : (
+          ''
+        )}
+      </SupremeTaskBox>
     </>
   )
 }
