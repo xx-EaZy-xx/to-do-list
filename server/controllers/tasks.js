@@ -1,19 +1,70 @@
-const { NODE_ENV, JWT_SECRET } = process.env
+const { Task } = require('../models')
 
 const getTasks = (req, res, next) => {
-  res.send('get tasks')
+  Task.findAll()
+    .then((task) => {
+      res.send(task)
+    })
+    .catch((err) => {
+      next(err)
+    })
 }
 
-const createTasks = (req, res, next) => {
-  res.send('create tasks')
+const createTasks = async (req, res, next) => {
+  console.log(req.body.name)
+  Task.create({ name: req.body.name, date: '12.12.2012' })
+    .then((task) => {
+      res.send(task)
+    })
+    .catch((err) => {
+      next(err)
+    })
 }
 
-const patchTasks = (req, res, next) => {
-  res.send('patch tasks')
+const deleteTasks = async (req, res, next) => {
+  Task.destroy({ where: { id: req.body.id } })
+    .then((task) => {
+      res.send(`task ${req.body.id} is deleted`)
+    })
+    .catch((err) => next(err))
 }
 
-const deleteTasks = (req, res, next) => {
-  res.send('delete tasks')
+const patchTasks = async (req, res, next) => {
+  if (req.body.name) {
+    TaskModel.update(
+      {
+        name: req.body.name,
+      },
+      {
+        where: {
+          id: req.body.id,
+        },
+      }
+    )
+      .then((task) => {
+        res.status(200).send(`task ${req.body.name} was updated`)
+      })
+      .catch((err) => next(err))
+  } else {
+    TaskModel.findOne({
+      where: {
+        id: req.body.id,
+      },
+    })
+      .then((task) => {
+        task.update(
+          {
+            isDone: !task.isDone,
+          },
+          {
+            where: {
+              id: req.body.id,
+            },
+          }
+        )
+      })
+      .catch((err) => next(err))
+  }
 }
 
 module.exports = {

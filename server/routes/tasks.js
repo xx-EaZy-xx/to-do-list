@@ -10,8 +10,8 @@ tasks.get('/', getTasks)
 
 tasks.post('/', createTasks)
 
-tasks.patch('/:_id', patchTasks)
+tasks.patch('/', patchTasks)
 
-tasks.delete('/:_id', deleteTasks)
+tasks.delete('/', deleteTasks)
 
 module.exports = tasks

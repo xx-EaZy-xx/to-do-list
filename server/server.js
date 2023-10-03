@@ -4,26 +4,18 @@ const cors = require('cors')
 const index = require('./routes/index')
 const limiter = require('./middlewares/limiter')
 const helmet = require('helmet')
-const DB = require('./DB.js')
-const User = require('./models/user')
+const db = require('./models')
 
-DB.sync()
+db.sequelize
+  .sync()
   .then(() => {
-    console.log('Synced db')
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`)
     })
   })
   .catch((err) => {
-    console.log('Failed to sync db: ' + err.message)
+    console.log('Failed to sync db: ' + err.message)``
   })
-
-// User.sync().then((res) => {
-//   User.create({ name: 'Nathan' }).then((res) => {
-//     console.log(`Insert successful: ${res.id}`)
-//     console.log('connection closed')
-//   })
-// })
 
 const { PORT } = process.env
 
