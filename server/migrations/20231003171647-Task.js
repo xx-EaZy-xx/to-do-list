@@ -16,6 +16,7 @@ module.exports = {
       },
       isDone: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       date: {
         type: Sequelize.STRING,

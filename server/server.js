@@ -14,7 +14,7 @@ db.sequelize
     })
   })
   .catch((err) => {
-    console.log('Failed to sync db: ' + err.message)``
+    next(err)
   })
 
 const { PORT } = process.env

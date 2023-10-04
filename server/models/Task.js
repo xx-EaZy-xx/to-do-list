@@ -9,16 +9,13 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
+      isDone: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       date: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-        isDone: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false,
-        },
+        defaultValue: new Date().toLocaleString().slice(0, 10),
       },
     },
     {

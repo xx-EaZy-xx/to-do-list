@@ -1,18 +1,54 @@
 const { Task } = require('../models')
 
 const getTasks = (req, res, next) => {
-  Task.findAll()
-    .then((task) => {
-      res.send(task)
+  const pageSize = 7
+  const offset = (req.query.page - 1) * pageSize
+  const limit = pageSize
+  //Unified function
+  function getThemAll(arg) {
+    Task.findAll(arg)
+      .then((task) => {
+        res.send(task)
+      })
+      .catch((err) => {
+        next(err)
+      })
+  }
+
+  if (req.query.filter === 'Today') {
+    getThemAll({
+      where: { date: new Date().toLocaleString().slice(0, 10) },
+      order: [['id']],
+      offset,
+      limit,
     })
-    .catch((err) => {
-      next(err)
+  }
+  if (req.query.filter === 'All') {
+    getThemAll({ offset, limit })
+  }
+  if (req.query.filter === 'Done') {
+    getThemAll({ where: { isDone: true }, offset, limit })
+  }
+  if (req.query.filter === 'Undone') {
+    getThemAll({ where: { isDone: false }, offset, limit })
+  }
+  if (req.query.filter === 'ASC') {
+    getThemAll({ order: [['createdAt'], ['id']], offset, limit })
+  }
+  if (req.query.filter === 'DESC') {
+    getThemAll({
+      order: [
+        ['createdAt', 'DESC'],
+        ['id', 'DESC'],
+      ],
+      offset,
+      limit,
     })
+  }
 }
 
 const createTasks = async (req, res, next) => {
-  console.log(req.body.name)
-  Task.create({ name: req.body.name, date: '12.12.2012' })
+  Task.create({ name: req.body.name, date: req.body.date })
     .then((task) => {
       res.send(task)
     })
@@ -23,7 +59,7 @@ const createTasks = async (req, res, next) => {
 
 const deleteTasks = async (req, res, next) => {
   Task.destroy({ where: { id: req.body.id } })
-    .then((task) => {
+    .then(() => {
       res.send(`task ${req.body.id} is deleted`)
     })
     .catch((err) => next(err))
@@ -31,7 +67,7 @@ const deleteTasks = async (req, res, next) => {
 
 const patchTasks = async (req, res, next) => {
   if (req.body.name) {
-    TaskModel.update(
+    Task.update(
       {
         name: req.body.name,
       },
@@ -41,12 +77,12 @@ const patchTasks = async (req, res, next) => {
         },
       }
     )
-      .then((task) => {
+      .then(() => {
         res.status(200).send(`task ${req.body.name} was updated`)
       })
       .catch((err) => next(err))
   } else {
-    TaskModel.findOne({
+    Task.findOne({
       where: {
         id: req.body.id,
       },

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
-const DB = new Sequelize('postgres', 'postgres', 'user', {
+const { DB_DIALECT, DB_NAME, DB_PASSWORD } = require('./envconfig')
+const DB = new Sequelize(DB_DIALECT, DB_NAME, DB_PASSWORD, {
   host: 'localhost',
   dialect: 'postgres',
   operatorsAliases: false,
