@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Api } from '../../utils/MainApi'
 import {
   ToDoContainer,
   TopContainer,
@@ -28,8 +29,9 @@ export default function ToDo() {
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
   const [currentTasks, setCurrentTasks] = useState([])
+  const [serverTasks, setServerTasks] = useState([])
   //Пагинация
-  const [currentPage, setCurrentPage] = useState(1)
+  const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
   //Модальные окна
   const [modalCreateIsOpen, setModalCreateIsOpen] = useState(false)
@@ -64,7 +66,6 @@ export default function ToDo() {
     // if (buttonClick === 'today') {
     //   return tasks.filter((task) => task.date <= today)
     // }
-    console.log('sortedTasks:', sortedTasks)
     setTasks(sortedTasks)
     setCurrentTasks(sortedTasks)
   }
@@ -161,19 +162,24 @@ export default function ToDo() {
     const indexOfFirstPost = postsPerPage * (pageNumber - 1)
     const currentPosts = tasks.slice(indexOfFirstPost, indexOfLastPost)
     setCurrentTasks(currentPosts)
-    setCurrentPage(pageCount < currentPage ? pageCount : pageNumber)
+    setPage(pageCount < page ? pageCount : pageNumber)
   }
   useEffect(() => {
-    paginate(currentPage)
-    if (tasks.length > currentPage * postsPerPage) {
+    paginate(page)
+    if (tasks.length > page * postsPerPage) {
       setCurrentTasks(tasks)
-      paginate(currentPage + 1)
+      paginate(page + 1)
     }
   }, [tasks])
 
   useEffect(() => {
-    paginate(currentPage)
+    paginate(page)
   }, [sortingVector])
+
+  //Запросы с сервера
+  useEffect(() => {
+    Api.getTasks().then((res) => console.log(res.data))
+  }, [])
 
   return (
     <ToDoContainer>
@@ -189,7 +195,6 @@ export default function ToDo() {
               id="today"
               onClick={() => {
                 handleButtonClick('today')
-                console.log(buttonClick)
               }}
               active={buttonClick === 'today'}
               type="button"
@@ -295,16 +300,16 @@ export default function ToDo() {
           {tasks.length <= postsPerPage
             ? tasks.map((task) => (
                 <Task
-                  key={task.key}
-                  taskKey={task.key}
+                  key={task.id}
+                  taskKey={task.id}
                   taskTag={task.name.trim()}
                   taskDate={task.date}
-                  tasks={tasks}
+                  tasks={serverTasks}
                   deleteTask={deleteTask}
                   returnDeleteModal={returnDeleteModal}
                   modalDeleteIsOpen={modalDeleteIsOpen}
                   setModalDeleteIsOpen={setModalDeleteIsOpen}
-                  done={task.done}
+                  done={task.isDone}
                 ></Task>
               ))
             : currentTasks.map((task) => (
