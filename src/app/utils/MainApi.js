@@ -14,7 +14,7 @@ export class MainApi {
     })
   }
 
-  postTask({ name = 'zalupa1', date = '03.10.2023', isDone = false }) {
+  postTask({ name = 'xero1', date = '03.10.2023', isDone = false }) {
     return axios.post(`${this._url}/tasks`, {
       name,
       date,

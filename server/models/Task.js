@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       date: {
         type: DataTypes.STRING,
-        defaultValue: new Date().toLocaleString().slice(0, 10),
+        defaultValue: new Date().toLocaleString().slice(0, 17),
       },
     },
     {

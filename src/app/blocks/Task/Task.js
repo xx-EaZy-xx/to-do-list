@@ -21,6 +21,7 @@ export default function Task({
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
   done,
+  createdAt,
 }) {
   const [taskStatus, setTaskStatus] = useState(done)
   const [arePointsPushed, setArePointsPushed] = useState(false)
@@ -28,7 +29,7 @@ export default function Task({
   const [inputValue, setInputValue] = useState('')
 
   const inputRef = useRef(null)
-  console.log(done)
+
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
@@ -60,30 +61,40 @@ export default function Task({
   }
 
   function handleData() {
-    function getDayOfTheWeek() {
-      if (taskDate.getDay() === new Date().getDay()) {
+    console.log(new Date().toLocaleString())
+    const year = taskDate.slice(6, 10)
+    const month = `${taskDate.slice(3, 5) - 1}` //Проёб с нулями??? - Вроде нет!
+    const day = taskDate.slice(1, 2)
+    const minutes = taskDate.slice(12, 17)
+    const dayOfTheWeek = new Date(year, month, day).getDay()
+    function getDayOfTheWeek(day) {
+      if (day === new Date().getDay()) {
         return 'Today'
-      } else if (taskDate.getDay() === 0) {
+      } else if (day === 0) {
         return 'Sunday'
-      } else if (taskDate.getDay() === 1) {
+      } else if (day === 1) {
         return 'Monday'
-      } else if (taskDate.getDay() === 2) {
+      } else if (day === 2) {
         return 'Tuesday'
-      } else if (taskDate.getDay() === 3) {
+      } else if (day === 3) {
         return 'Wednesday'
-      } else if (taskDate.getDay() === 4) {
+      } else if (day === 4) {
         return 'Thursday'
-      } else if (taskDate.getDay() === 5) {
+      } else if (day === 5) {
         return 'Friday'
-      } else if (taskDate.getDay() === 6) {
+      } else if (day === 6) {
         return 'Saturday'
       }
     }
-    const isSingle =
-      Array.from(String(taskDate.getMinutes())).length === 1 ? '0' : ''
-
-    return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${isSingle}${taskDate.getMinutes()}`
+    return `${getDayOfTheWeek(dayOfTheWeek)} at ${minutes}`
   }
+  // function handleData() {
+  //   }
+  // const isSingle =
+  //   Array.from(String(taskDate.getMinutes())).length === 1 ? '0' : ''
+
+  // return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${taskDate.getMinutes()}`
+  // }
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress)
@@ -103,7 +114,6 @@ export default function Task({
               onClick={() => {
                 handlePush(taskStatus, setTaskStatus)
                 done = true
-                console.log(done)
               }}
               src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
               alt="кнопка завершить задачу - галочка"

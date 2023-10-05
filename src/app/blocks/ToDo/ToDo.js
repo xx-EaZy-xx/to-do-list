@@ -178,7 +178,12 @@ export default function ToDo() {
 
   //Запросы с сервера
   useEffect(() => {
-    Api.getTasks().then((res) => console.log(res.data))
+    const alal = new Date().toLocaleDateString
+    console.log(alal)
+    Api.getTasks(1, 'All').then((res) => {
+      setTasks(res.data)
+    })
+    Api.postTask({ name: 'new task alal!', date: alal })
   }, [])
 
   return (
@@ -297,35 +302,21 @@ export default function ToDo() {
           ) : (
             ''
           )}
-          {tasks.length <= postsPerPage
-            ? tasks.map((task) => (
-                <Task
-                  key={task.id}
-                  taskKey={task.id}
-                  taskTag={task.name.trim()}
-                  taskDate={task.date}
-                  tasks={serverTasks}
-                  deleteTask={deleteTask}
-                  returnDeleteModal={returnDeleteModal}
-                  modalDeleteIsOpen={modalDeleteIsOpen}
-                  setModalDeleteIsOpen={setModalDeleteIsOpen}
-                  done={task.isDone}
-                ></Task>
-              ))
-            : currentTasks.map((task) => (
-                <Task
-                  key={task.key}
-                  taskKey={task.key}
-                  taskTag={task.name.trim()}
-                  taskDate={task.date}
-                  tasks={tasks}
-                  deleteTask={deleteTask}
-                  returnDeleteModal={returnDeleteModal}
-                  modalDeleteIsOpen={modalDeleteIsOpen}
-                  setModalDeleteIsOpen={setModalDeleteIsOpen}
-                  done={task.done}
-                ></Task>
-              ))}
+          {tasks.map((task) => (
+            <Task
+              key={task.id}
+              taskKey={task.id}
+              taskTag={task.name.trim()}
+              taskDate={task.date}
+              createdAt={task.createdAt}
+              tasks={tasks}
+              deleteTask={deleteTask}
+              returnDeleteModal={returnDeleteModal}
+              modalDeleteIsOpen={modalDeleteIsOpen}
+              setModalDeleteIsOpen={setModalDeleteIsOpen}
+              done={task.isDone}
+            ></Task>
+          ))}
         </BottomBlockContainer>
       </BottomContainer>
       <ModalWindow
