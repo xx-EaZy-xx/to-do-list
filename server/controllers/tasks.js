@@ -23,24 +23,40 @@ const getTasks = (req, res, next) => {
       limit,
     })
   }
-  if (req.query.filter === 'All') {
-    getThemAll({ offset, limit })
+  if (req.query.filter === 'All' && req.query.sortVector === 'ASC') {
+    getThemAll({ order: [['createdAt', 'ASC']], offset, limit })
   }
-  if (req.query.filter === 'Done') {
-    getThemAll({ where: { isDone: true }, offset, limit })
+  if (req.query.filter === 'All' && req.query.sortVector === 'DESC') {
+    getThemAll({ order: [['createdAt', 'DESC']], offset, limit })
   }
-  if (req.query.filter === 'Undone') {
-    getThemAll({ where: { isDone: false }, offset, limit })
-  }
-  if (req.query.sortVector === 'ASC') {
-    getThemAll({ order: [['createdAt'], ['id']], offset, limit })
-  }
-  if (req.query.sortVector === 'DESC') {
+  if (req.query.filter === 'Done' && req.query.sortVector === 'ASC') {
     getThemAll({
-      order: [
-        ['createdAt', 'DESC'],
-        ['id', 'DESC'],
-      ],
+      order: [['createdAt', 'ASC']],
+      where: { isDone: true },
+      offset,
+      limit,
+    })
+  }
+  if (req.query.filter === 'Done' && req.query.sortVector === 'DESC') {
+    getThemAll({
+      order: [['createdAt', 'DESC']],
+      where: { isDone: true },
+      offset,
+      limit,
+    })
+  }
+  if (req.query.filter === 'Undone' && req.query.sortVector === 'ASC') {
+    getThemAll({
+      order: [['createdAt', 'ASC']],
+      where: { isDone: false },
+      offset,
+      limit,
+    })
+  }
+  if (req.query.filter === 'Undone' && req.query.sortVector === 'DESC') {
+    getThemAll({
+      order: [['createdAt', 'DESC']],
+      where: { isDone: false },
       offset,
       limit,
     })

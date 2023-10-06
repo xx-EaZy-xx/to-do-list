@@ -30,7 +30,7 @@ export default function ToDo() {
   const [tasks, setTasks] = useState([])
   const [timeToFetch, setTimeToFetch] = useState(false)
   //Сортировка
-  const [sortVector, setSortVector] = useState('DESC')
+  const [sortVector, setSortVector] = useState('ASC')
   //Пагинация
   const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
@@ -57,9 +57,6 @@ export default function ToDo() {
     setButtonClick(button)
     if (buttonClick === 'all') {
       setButtonClick(doneButtonClick)
-    }
-    if (buttonClick === 'date') {
-      changeSortVector()
     }
     handleFetch()
   }
