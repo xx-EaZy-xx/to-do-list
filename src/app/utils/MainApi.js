@@ -14,7 +14,11 @@ export class MainApi {
     })
   }
 
-  postTask({ name = 'xero1', date = '03.10.2023', isDone = false }) {
+  postTask({
+    name = '<Nameless task>',
+    date = new Date().toLocaleString(),
+    isDone = false,
+  }) {
     return axios.post(`${this._url}/tasks`, {
       name,
       date,
@@ -34,14 +38,6 @@ export class MainApi {
       id: taskId,
     })
   }
-  //    Примеры запросов к Api:
-  //
-  //    Api.getTasks().then((res) => console.log(res.data))
-  //    Api.postTask({ name: 'zazz', date: '01.01.2001', isDone: false }).then(
-  //      (res) => console.log(res.data)
-  //    )
-  //    Api.deleteTask(7).then((res) => console.log(res.data))
-  //    Api.updateTask('one', 1).then((res) => console.log(res.data))
 }
 const Api = new MainApi({
   url: BASE_URL,

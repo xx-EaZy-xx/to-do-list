@@ -29,7 +29,7 @@ export default function ToDo() {
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
   const [currentTasks, setCurrentTasks] = useState([])
-  const [serverTasks, setServerTasks] = useState([])
+  const [timeToFetch, setTimeToFetch] = useState(false)
   //Пагинация
   const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
@@ -43,6 +43,10 @@ export default function ToDo() {
   const [doneButtonClick, setDoneButtonClick] = useState('All')
   //Сортировка тасок
   const [sortingVector, setSortingVector] = useState(false)
+
+  function handleFetch() {
+    setTimeToFetch(!timeToFetch)
+  }
 
   // код Антона
   const [test, setTest] = useState({
@@ -60,7 +64,6 @@ export default function ToDo() {
           : task.done === false
       })
     }
-    //Осталось только найти способ поменять done/undone при нажатии на галочку внутри таски
 
     //Сортировка по today
     // if (buttonClick === 'today') {
@@ -105,7 +108,7 @@ export default function ToDo() {
   }
   function insertInputValue() {
     if (inputValue !== '') {
-      newAddTask(inputValue)
+      addNewTask(inputValue)
     } else {
       return
     }
@@ -120,39 +123,6 @@ export default function ToDo() {
   }
   const handleDoneClick = (button) => {
     setDoneButtonClick(button)
-  }
-
-  //Добавление новых задач
-  function newAddTask(name) {
-    const newTasks = [
-      ...tasks,
-      {
-        name: name,
-        key: +Date.now(),
-        date: new Date(),
-        done: false,
-      },
-    ]
-
-    setTasks(newTasks)
-  }
-
-  //Удаление задач
-  function deleteTask(taskId) {
-    const puredArr = tasks.filter((el) => el.key !== taskId)
-    setTasks(puredArr)
-  }
-  function returnDeleteModal(arg) {
-    return (
-      <ModalWindow
-        isOpen={modalDeleteIsOpen}
-        setIsOpen={handleModalDeleteOpen}
-        poly={'delete'}
-        deleteTask={() => {
-          deleteTask(arg)
-        }}
-      />
-    )
   }
 
   //Пагинация
@@ -176,16 +146,42 @@ export default function ToDo() {
     paginate(page)
   }, [sortingVector])
 
+  //Удаление задач
+  function deleteTask(taskId) {
+    Api.deleteTask(taskId)
+    const puredArr = tasks.filter((el) => el.key !== taskId)
+    setTasks(puredArr)
+  }
+  function returnDeleteModal(arg) {
+    return (
+      <ModalWindow
+        taskId={arg}
+        isOpen={modalDeleteIsOpen}
+        setIsOpen={handleModalDeleteOpen}
+        poly={'delete'}
+        deleteTask={() => {
+          deleteTask(arg)
+          handleFetch()
+        }}
+      />
+    )
+  }
+  //Добавление новых задач
+  function addNewTask(name) {
+    Api.postTask({ name })
+    handleFetch()
+  }
   //Запросы с сервера
   useEffect(() => {
-    const alal = new Date().toLocaleDateString
-    console.log(alal)
     Api.getTasks(1, 'All').then((res) => {
       setTasks(res.data)
     })
-    Api.postTask({ name: 'new task alal!', date: alal })
   }, [])
-
+  useEffect(() => {
+    Api.getTasks(1, 'All').then((res) => {
+      setTasks(res.data)
+    })
+  }, [timeToFetch])
   return (
     <ToDoContainer>
       <TopContainer>
@@ -308,7 +304,6 @@ export default function ToDo() {
               taskKey={task.id}
               taskTag={task.name.trim()}
               taskDate={task.date}
-              createdAt={task.createdAt}
               tasks={tasks}
               deleteTask={deleteTask}
               returnDeleteModal={returnDeleteModal}

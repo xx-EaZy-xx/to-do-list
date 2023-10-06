@@ -22,6 +22,7 @@ export default function ModalWindow({
   handleInputChange,
   taskKey,
   deleteTask,
+  taskId,
 }) {
   const modalInput = useRef(null)
   const trashButton = useRef(null)
@@ -103,7 +104,7 @@ export default function ModalWindow({
             <ModalLittleBox
               ref={trashButton}
               onClick={() => {
-                deleteTask(taskKey)
+                deleteTask(taskId)
               }}
               onKeyDown={(e) => {
                 handleEscClose(e)

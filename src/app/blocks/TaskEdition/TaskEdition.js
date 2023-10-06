@@ -7,8 +7,6 @@ export default function TaskEdition({
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
 }) {
-  const modal = returnDeleteModal
-
   return (
     <EditBox>
       <EditButtonBox type="button">
@@ -27,7 +25,7 @@ export default function TaskEdition({
       >
         <EditImage alt="кнопка удаления задачи" src="trash.svg" />
       </EditButtonBox>
-      {modalDeleteIsOpen ? modal : ''}
+      {modalDeleteIsOpen ? returnDeleteModal : ''}
     </EditBox>
   )
 }

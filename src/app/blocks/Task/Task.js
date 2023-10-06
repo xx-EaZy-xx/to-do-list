@@ -21,7 +21,6 @@ export default function Task({
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
   done,
-  createdAt,
 }) {
   const [taskStatus, setTaskStatus] = useState(done)
   const [arePointsPushed, setArePointsPushed] = useState(false)
@@ -60,12 +59,11 @@ export default function Task({
     }
   }
 
-  function handleData() {
-    console.log(new Date().toLocaleString())
+  function handleTaskDate() {
     const year = taskDate.slice(6, 10)
     const month = `${taskDate.slice(3, 5) - 1}` //Проёб с нулями??? - Вроде нет!
     const day = taskDate.slice(1, 2)
-    const minutes = taskDate.slice(12, 17)
+    const minutes = taskDate.slice(12, 17).replaceAll('.', ':')
     const dayOfTheWeek = new Date(year, month, day).getDay()
     function getDayOfTheWeek(day) {
       if (day === new Date().getDay()) {
@@ -88,13 +86,6 @@ export default function Task({
     }
     return `${getDayOfTheWeek(dayOfTheWeek)} at ${minutes}`
   }
-  // function handleData() {
-  //   }
-  // const isSingle =
-  //   Array.from(String(taskDate.getMinutes())).length === 1 ? '0' : ''
-
-  // return `${getDayOfTheWeek()} at ${taskDate.getHours()}:${taskDate.getMinutes()}`
-  // }
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress)
@@ -139,7 +130,7 @@ export default function Task({
               ></TaskInput>
             </LittleBox>
             <LittleBoxLeft>
-              {handleData()}
+              {handleTaskDate()}
               <ButtonBox
                 onClick={() => {
                   handlePush(arePointsPushed, setArePointsPushed)
