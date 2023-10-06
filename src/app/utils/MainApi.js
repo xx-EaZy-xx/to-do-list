@@ -5,11 +5,12 @@ export class MainApi {
     this._url = config.url
   }
 
-  getTasks(page = 1, filter = 'All') {
+  getTasks(page = 1, filter = 'All', sortVector) {
     return axios.get(`${this._url}/tasks`, {
       params: {
         page,
         filter,
+        sortVector,
       },
     })
   }
@@ -32,11 +33,17 @@ export class MainApi {
     })
   }
 
-  updateTask(taskName, taskId) {
-    return axios.patch(`${this._url}/tasks`, {
-      name: taskName,
-      id: taskId,
-    })
+  updateTask({ taskName, taskId }) {
+    if (taskName) {
+      return axios.patch(`${this._url}/tasks`, {
+        name: taskName,
+        id: taskId,
+      })
+    } else {
+      return axios.patch(`${this._url}/tasks`, {
+        id: taskId,
+      })
+    }
   }
 }
 const Api = new MainApi({

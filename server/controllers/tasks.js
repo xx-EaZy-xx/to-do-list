@@ -32,10 +32,10 @@ const getTasks = (req, res, next) => {
   if (req.query.filter === 'Undone') {
     getThemAll({ where: { isDone: false }, offset, limit })
   }
-  if (req.query.filter === 'ASC') {
+  if (req.query.sortVector === 'ASC') {
     getThemAll({ order: [['createdAt'], ['id']], offset, limit })
   }
-  if (req.query.filter === 'DESC') {
+  if (req.query.sortVector === 'DESC') {
     getThemAll({
       order: [
         ['createdAt', 'DESC'],
@@ -98,6 +98,9 @@ const patchTasks = async (req, res, next) => {
             },
           }
         )
+      })
+      .then(() => {
+        res.status(200).send(`task ${req.body.id} was updated`)
       })
       .catch((err) => next(err))
   }

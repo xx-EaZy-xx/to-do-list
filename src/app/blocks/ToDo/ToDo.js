@@ -25,11 +25,12 @@ import Pagination from '../Pagination/Pagination'
 
 export default function ToDo() {
   //Имя пользователя - позже будет приходить с сервера
-  const [userName, setUserName] = useState('UserName')
+  const [userName] = useState('UserName')
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
-  const [currentTasks, setCurrentTasks] = useState([])
   const [timeToFetch, setTimeToFetch] = useState(false)
+  //Сортировка
+  const [sortVector, setSortVector] = useState('DESC')
   //Пагинация
   const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
@@ -41,56 +42,30 @@ export default function ToDo() {
   //Боковые кнопки
   const [buttonClick, setButtonClick] = useState('today')
   const [doneButtonClick, setDoneButtonClick] = useState('All')
-  //Сортировка тасок
-  const [sortingVector, setSortingVector] = useState(false)
 
-  function handleFetch() {
-    setTimeToFetch(!timeToFetch)
+  //Нажатие кнопок
+
+  function changeSortVector() {
+    if (sortVector === 'ASC') {
+      setSortVector('DESC')
+    } else if (sortVector === 'DESC') {
+      setSortVector('ASC')
+    }
   }
 
-  // код Антона
-  const [test, setTest] = useState({
-    dataSort: 'asc',
-    filter: 'all',
-    today: false,
-  })
-
-  const handleTasks = () => {
-    let sortedTasks = [...tasks]
-    if (doneButtonClick !== 'All') {
-      sortedTasks = sortedTasks.filter((task) => {
-        return doneButtonClick === 'Done'
-          ? task.done === true
-          : task.done === false
-      })
+  const handleButtonClick = (button) => {
+    setButtonClick(button)
+    if (buttonClick === 'all') {
+      setButtonClick(doneButtonClick)
     }
-
-    //Сортировка по today
-    // if (buttonClick === 'today') {
-    //   return tasks.filter((task) => task.date <= today)
-    // }
-    setTasks(sortedTasks)
-    setCurrentTasks(sortedTasks)
+    if (buttonClick === 'date') {
+      changeSortVector()
+    }
+    handleFetch()
   }
-
-  useEffect(() => {
-    handleTasks()
-  }, [test, buttonClick, doneButtonClick])
-  // код Антона
-
-  //Сортировка тасок
-  function handleSortingByDate() {
-    setSortingVector(!sortingVector)
-    function sorting(arg) {
-      if (arg === false) {
-        const filteredTasks = tasks.sort((a, b) => (b.key > a.key ? 1 : -1))
-        setTasks(filteredTasks)
-      } else if (arg === true) {
-        const filteredTasks = tasks.sort((a, b) => (a.key > b.key ? 1 : -1))
-        setTasks(filteredTasks)
-      }
-    }
-    sorting(sortingVector)
+  const handleDoneClick = (button) => {
+    setDoneButtonClick(button)
+    handleFetch()
   }
 
   //Модальные окна
@@ -113,38 +88,6 @@ export default function ToDo() {
       return
     }
   }
-
-  //Нажатие кнопок
-  const handleButtonClick = (button) => {
-    setButtonClick(button)
-    if (buttonClick === 'all') {
-      setButtonClick(doneButtonClick)
-    }
-  }
-  const handleDoneClick = (button) => {
-    setDoneButtonClick(button)
-  }
-
-  //Пагинация
-  const paginate = (pageNumber) => {
-    const pageCount = Math.ceil(tasks.length / postsPerPage)
-    const indexOfLastPost = pageNumber * postsPerPage
-    const indexOfFirstPost = postsPerPage * (pageNumber - 1)
-    const currentPosts = tasks.slice(indexOfFirstPost, indexOfLastPost)
-    setCurrentTasks(currentPosts)
-    setPage(pageCount < page ? pageCount : pageNumber)
-  }
-  useEffect(() => {
-    paginate(page)
-    if (tasks.length > page * postsPerPage) {
-      setCurrentTasks(tasks)
-      paginate(page + 1)
-    }
-  }, [tasks])
-
-  useEffect(() => {
-    paginate(page)
-  }, [sortingVector])
 
   //Удаление задач
   function deleteTask(taskId) {
@@ -172,13 +115,11 @@ export default function ToDo() {
     handleFetch()
   }
   //Запросы с сервера
+  function handleFetch() {
+    setTimeToFetch(!timeToFetch)
+  }
   useEffect(() => {
-    Api.getTasks(1, 'All').then((res) => {
-      setTasks(res.data)
-    })
-  }, [])
-  useEffect(() => {
-    Api.getTasks(1, 'All').then((res) => {
+    Api.getTasks(page, doneButtonClick, sortVector).then((res) => {
       setTasks(res.data)
     })
   }, [timeToFetch])
@@ -228,7 +169,7 @@ export default function ToDo() {
               id="date"
               onClick={() => {
                 handleButtonClick('date')
-                handleSortingByDate()
+                changeSortVector()
               }}
               active={buttonClick === 'date'}
               display={buttonClick === 'all' ? 'none' : 'flex'}
@@ -310,6 +251,9 @@ export default function ToDo() {
               modalDeleteIsOpen={modalDeleteIsOpen}
               setModalDeleteIsOpen={setModalDeleteIsOpen}
               done={task.isDone}
+              handleFetch={() => {
+                handleFetch()
+              }}
             ></Task>
           ))}
         </BottomBlockContainer>
@@ -322,15 +266,7 @@ export default function ToDo() {
         handleInputChange={handleInputChange}
         addTask={insertInputValue}
       />
-      {tasks.length <= postsPerPage ? (
-        ''
-      ) : (
-        <Pagination
-          postsPerPage={postsPerPage}
-          totalPosts={tasks.length}
-          paginate={paginate}
-        />
-      )}
+      {tasks.length <= postsPerPage ? '' : <Pagination />}
     </ToDoContainer>
   )
 }

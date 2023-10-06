@@ -20,7 +20,6 @@ export default function ModalWindow({
   addTask,
   inputValue,
   handleInputChange,
-  taskKey,
   deleteTask,
   taskId,
 }) {

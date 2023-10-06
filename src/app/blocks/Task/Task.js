@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Api } from '../../utils/MainApi'
 import {
   SupremeTaskBox,
   MainTaskBox,
@@ -21,6 +22,7 @@ export default function Task({
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
   done,
+  handleFetch,
 }) {
   const [taskStatus, setTaskStatus] = useState(done)
   const [arePointsPushed, setArePointsPushed] = useState(false)
@@ -43,6 +45,8 @@ export default function Task({
     } else {
       inputRef.current.blur()
       setInputIsFocused(false)
+      Api.updateTask({ taskName: inputValue, taskId: taskKey })
+      handleFetch()
     }
   }
 
@@ -104,7 +108,8 @@ export default function Task({
             <TaskImage
               onClick={() => {
                 handlePush(taskStatus, setTaskStatus)
-                done = true
+                Api.updateTask({ taskId: taskKey })
+                handleFetch()
               }}
               src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
               alt="кнопка завершить задачу - галочка"
