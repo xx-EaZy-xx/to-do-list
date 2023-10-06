@@ -31,7 +31,6 @@ export default function ModalWindow({
       setIsOpen(false)
     }
   }
-
   function handleEscClose(e) {
     if (e.key === 'Enter' && !!deleteTask) {
       deleteTask()

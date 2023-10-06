@@ -28,6 +28,7 @@ export default function ToDo() {
   const [userName] = useState('UserName')
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
+  const [taskNumber, setTaskNumber] = useState(0)
   const [timeToFetch, setTimeToFetch] = useState(false)
   //Сортировка
   const [sortVector, setSortVector] = useState('ASC')
@@ -43,8 +44,12 @@ export default function ToDo() {
   const [buttonClick, setButtonClick] = useState('today')
   const [doneButtonClick, setDoneButtonClick] = useState('All')
 
+  //Немного пагинации
+  function handlePage(arg) {
+    setPage(arg)
+    handleFetch()
+  }
   //Нажатие кнопок
-
   function changeSortVector() {
     if (sortVector === 'ASC') {
       setSortVector('DESC')
@@ -52,7 +57,6 @@ export default function ToDo() {
       setSortVector('ASC')
     }
   }
-
   const handleButtonClick = (button) => {
     setButtonClick(button)
     if (buttonClick === 'all') {
@@ -117,7 +121,8 @@ export default function ToDo() {
   }
   useEffect(() => {
     Api.getTasks(page, doneButtonClick, sortVector).then((res) => {
-      setTasks(res.data)
+      setTasks(res.data.tasks)
+      setTaskNumber(res.data.total.length)
     })
   }, [timeToFetch])
   return (
@@ -263,7 +268,11 @@ export default function ToDo() {
         handleInputChange={handleInputChange}
         addTask={insertInputValue}
       />
-      {tasks.length <= postsPerPage ? '' : <Pagination />}
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={taskNumber}
+        handlePage={handlePage}
+      />
     </ToDoContainer>
   )
 }

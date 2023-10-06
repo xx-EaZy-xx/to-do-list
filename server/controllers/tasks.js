@@ -4,11 +4,14 @@ const getTasks = (req, res, next) => {
   const pageSize = 7
   const offset = (req.query.page - 1) * pageSize
   const limit = pageSize
+
   //Unified function
   function getThemAll(arg) {
     Task.findAll(arg)
-      .then((task) => {
-        res.send(task)
+      .then((tasks) => {
+        Task.findAll().then((total) => {
+          res.send({ tasks, total })
+        })
       })
       .catch((err) => {
         next(err)

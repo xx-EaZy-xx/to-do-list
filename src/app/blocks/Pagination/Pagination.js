@@ -1,17 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { PageContainer, PageButton } from './PaginationStyles'
 
-export default function Pagination({ postsPerPage, totalPosts, paginate }) {
-  const [pageIsActive, setPageIsActive] = useState(false)
-
+export default function Pagination({ postsPerPage, totalPosts, handlePage }) {
   const pageCount = Math.ceil(totalPosts / postsPerPage)
   const pageNumbers = Array.from({ length: pageCount }).map(
     (el, index) => index + 1
   )
-
-  function handlePageIsActive() {
-    setPageIsActive(!pageIsActive)
-  }
 
   return (
     <PageContainer>
@@ -20,10 +14,8 @@ export default function Pagination({ postsPerPage, totalPosts, paginate }) {
           <PageButton
             key={number}
             onClick={() => {
-              paginate(number)
-              handlePageIsActive()
+              handlePage(number)
             }}
-            active={false}
           >
             {number}
           </PageButton>
