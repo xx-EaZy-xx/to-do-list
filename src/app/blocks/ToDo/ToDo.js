@@ -120,7 +120,7 @@ export default function ToDo() {
     setTimeToFetch(!timeToFetch)
   }
   useEffect(() => {
-    Api.getTasks(page, doneButtonClick, buttonClick, sortVector).then((res) => {
+    Api.getTasks(page, doneButtonClick, sortVector).then((res) => {
       setTasks(res.data.tasks)
       setTaskNumber(res.data.total.length)
     })

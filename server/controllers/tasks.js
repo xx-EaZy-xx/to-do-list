@@ -18,7 +18,7 @@ const getTasks = (req, res, next) => {
       })
   }
 
-  if (req.query.today === 'today') {
+  if (req.query.filter === 'today') {
     getThemAll({
       where: { partialDate: new Date().toLocaleString().slice(0, 10) },
       order: [['date']],
