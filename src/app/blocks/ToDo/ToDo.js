@@ -66,6 +66,7 @@ export default function ToDo() {
   }
   const handleDoneClick = (button) => {
     setDoneButtonClick(button)
+    setPage(1)
     handleFetch()
   }
 

@@ -9,7 +9,8 @@ const getTasks = (req, res, next) => {
   function getThemAll(arg) {
     Task.findAll(arg)
       .then((tasks) => {
-        Task.findAll().then((total) => {
+        Task.findAll({ where: arg.where }).then((total) => {
+          console.log('ДЛИНА ТАСОК', total.length)
           res.send({ tasks, total })
         })
       })
