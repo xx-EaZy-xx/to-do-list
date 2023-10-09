@@ -38,9 +38,9 @@ export const PageButton = styled.button`
   padding: 0 10px 10px 8px;
   align-items: center;
   display: flex;
-  text-decoration: underline;
+  text-decoration: ${(props) => (props.current ? 'underline' : 'none')};
   transition: 0.1s;
-  color: ${(props) => (props.active ? 'white' : 'black')};
+  color: ${(props) => (props.current ? 'white' : 'black')};
 
   &:hover {
     transition: 0.1s;

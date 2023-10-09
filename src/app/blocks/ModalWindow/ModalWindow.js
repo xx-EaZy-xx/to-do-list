@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   ModalBackground,
   ModalContainer,
@@ -19,19 +19,27 @@ export default function ModalWindow({
   poly,
   addTask,
   inputValue,
+  setInputValue,
   handleInputChange,
   deleteTask,
   taskId,
 }) {
+  const [placeholder, setPlaceHolder] = useState('Enter text...')
   const modalInput = useRef(null)
   const trashButton = useRef(null)
+
+  function handleValidation(arg) {
+    setInputValue('')
+    setPlaceHolder(arg)
+    return
+  }
 
   function handleOverlayClose(e) {
     if (e.target === e.currentTarget) {
       setIsOpen(false)
     }
   }
-  function handleEscClose(e) {
+  function handleKeyPress(e) {
     if (e.key === 'Enter' && !!deleteTask) {
       deleteTask()
       setIsOpen(false)
@@ -81,9 +89,13 @@ export default function ModalWindow({
               handleInputChange(e)
             }}
             onKeyDown={(e) => {
-              handleEscClose(e)
+              if (inputValue.trim() === '') {
+                handleValidation('Empty space is not a valid task name')
+              } else {
+                handleKeyPress(e)
+              }
             }}
-            placeholder="Enter text..."
+            placeholder={placeholder}
           />
         ) : (
           <ModalMessage>Are you sure about deleting this task?</ModalMessage>
@@ -93,6 +105,9 @@ export default function ModalWindow({
             <ModalLittleBox
               onClick={() => {
                 addTask(inputValue)
+                if (inputValue.trim() === '') {
+                  handleValidation('Empty space is not a valid task name')
+                }
               }}
             >
               <ModalSigns src="doneGreen.svg" />
@@ -105,7 +120,7 @@ export default function ModalWindow({
                 deleteTask(taskId)
               }}
               onKeyDown={(e) => {
-                handleEscClose(e)
+                handleKeyPress(e)
               }}
             >
               <ModalSigns src="trash.svg" />

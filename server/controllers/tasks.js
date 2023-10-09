@@ -10,7 +10,6 @@ const getTasks = (req, res, next) => {
     Task.findAll(arg)
       .then((tasks) => {
         Task.findAll({ where: arg.where }).then((total) => {
-          console.log('ДЛИНА ТАСОК', total.length)
           res.send({ tasks, total })
         })
       })
@@ -18,22 +17,52 @@ const getTasks = (req, res, next) => {
         next(err)
       })
   }
-
-  if (req.query.filter === 'today') {
-    getThemAll({
-      where: { partialDate: new Date().toLocaleString().slice(0, 10) },
-      order: [['date']],
-      offset,
-      limit,
-    })
-  }
-  if (req.query.filter === 'All' && req.query.sortVector === 'ASC') {
+  //All ASC
+  if (
+    req.query.filter === 'All' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({ order: [['createdAt', 'ASC']], offset, limit })
   }
-  if (req.query.filter === 'All' && req.query.sortVector === 'DESC') {
+  if (
+    req.query.filter === 'All' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      where: { partialDate: new Date().toLocaleString().slice(0, 10) },
+      order: [['createdAt', 'ASC']],
+      offset,
+      limit,
+    })
+  }
+  //All DESC
+  if (
+    req.query.filter === 'All' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({ order: [['createdAt', 'DESC']], offset, limit })
   }
-  if (req.query.filter === 'Done' && req.query.sortVector === 'ASC') {
+  if (
+    req.query.filter === 'All' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      where: { partialDate: new Date().toLocaleString().slice(0, 10) },
+      order: [['createdAt', 'DESC']],
+      offset,
+      limit,
+    })
+  }
+  //Done ASC
+  if (
+    req.query.filter === 'Done' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({
       order: [['createdAt', 'ASC']],
       where: { isDone: true },
@@ -41,7 +70,27 @@ const getTasks = (req, res, next) => {
       limit,
     })
   }
-  if (req.query.filter === 'Done' && req.query.sortVector === 'DESC') {
+  if (
+    req.query.filter === 'Done' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      order: [['createdAt', 'ASC']],
+      where: {
+        isDone: true,
+        partialDate: new Date().toLocaleString().slice(0, 10),
+      },
+      offset,
+      limit,
+    })
+  }
+  //Done DESC
+  if (
+    req.query.filter === 'Done' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({
       order: [['createdAt', 'DESC']],
       where: { isDone: true },
@@ -49,7 +98,27 @@ const getTasks = (req, res, next) => {
       limit,
     })
   }
-  if (req.query.filter === 'Undone' && req.query.sortVector === 'ASC') {
+  if (
+    req.query.filter === 'Done' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      order: [['createdAt', 'DESC']],
+      where: {
+        isDone: true,
+        partialDate: new Date().toLocaleString().slice(0, 10),
+      },
+      offset,
+      limit,
+    })
+  }
+  //Undone ASC
+  if (
+    req.query.filter === 'Undone' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({
       order: [['createdAt', 'ASC']],
       where: { isDone: false },
@@ -57,10 +126,45 @@ const getTasks = (req, res, next) => {
       limit,
     })
   }
-  if (req.query.filter === 'Undone' && req.query.sortVector === 'DESC') {
+  if (
+    req.query.filter === 'Undone' &&
+    req.query.sortVector === 'ASC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      order: [['createdAt', 'ASC']],
+      where: {
+        isDone: false,
+        partialDate: new Date().toLocaleString().slice(0, 10),
+      },
+      offset,
+      limit,
+    })
+  }
+  //Undone DESC
+  if (
+    req.query.filter === 'Undone' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'any'
+  ) {
     getThemAll({
       order: [['createdAt', 'DESC']],
       where: { isDone: false },
+      offset,
+      limit,
+    })
+  }
+  if (
+    req.query.filter === 'Undone' &&
+    req.query.sortVector === 'DESC' &&
+    req.query.today === 'today'
+  ) {
+    getThemAll({
+      order: [['createdAt', 'DESC']],
+      where: {
+        isDone: false,
+        partialDate: new Date().toLocaleString().slice(0, 10),
+      },
       offset,
       limit,
     })

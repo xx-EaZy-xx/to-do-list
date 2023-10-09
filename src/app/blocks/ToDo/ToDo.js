@@ -31,7 +31,8 @@ export default function ToDo() {
   const [taskNumber, setTaskNumber] = useState(0)
   const [timeToFetch, setTimeToFetch] = useState(false)
   //Сортировка
-  const [sortVector, setSortVector] = useState('ASC')
+  const [sortToday, setSortToday] = useState('any')
+  const [sortVector, setSortVector] = useState('DESC')
   //Пагинация
   const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
@@ -41,8 +42,12 @@ export default function ToDo() {
   //Сохранение значения инпута модалки создания тасок
   const [inputValue, setInputValue] = useState('')
   //Боковые кнопки
-  const [buttonClick, setButtonClick] = useState('all')
-  const [doneButtonClick, setDoneButtonClick] = useState('All')
+  const [button, setButton] = useState({
+    main: 'today',
+    drop: 'All',
+    dropStatus: false,
+    vectorStatus: false,
+  })
 
   //Немного пагинации
   function handlePage(arg) {
@@ -50,24 +55,33 @@ export default function ToDo() {
     handleFetch()
   }
   //Нажатие кнопок
+
+  function handleButtonPush(arg, arg2, arg3, arg4, arg5) {
+    setButton({
+      main: arg,
+      drop: arg2 ?? button.drop,
+      dropStatus: !!arg3 ?? !!button.dropStatus,
+      todayStatus: !!arg4 ?? !!button.todayStatus,
+      vectorStatus: !!arg5 ?? !!button.vectorStatus,
+    })
+    handleFetch()
+  }
+
+  function changeSortToday() {
+    if (sortToday === 'today') {
+      setSortToday('any')
+    } else if (sortToday === 'any') {
+      setSortToday('today')
+    }
+    handlePage(1)
+  }
+
   function changeSortVector() {
     if (sortVector === 'ASC') {
       setSortVector('DESC')
     } else if (sortVector === 'DESC') {
       setSortVector('ASC')
     }
-  }
-  const handleButtonClick = (button) => {
-    setButtonClick(button)
-    if (buttonClick === 'all') {
-      setButtonClick(doneButtonClick)
-    }
-    handleFetch()
-  }
-  const handleDoneClick = (button) => {
-    setDoneButtonClick(button)
-    setPage(1)
-    handleFetch()
   }
 
   //Модальные окна
@@ -84,7 +98,7 @@ export default function ToDo() {
     setInputValue(e.target.value)
   }
   function insertInputValue() {
-    if (inputValue !== '') {
+    if (inputValue.trim() !== '') {
       addNewTask(inputValue)
     } else {
       return
@@ -121,7 +135,7 @@ export default function ToDo() {
     setTimeToFetch(!timeToFetch)
   }
   useEffect(() => {
-    Api.getTasks(page, doneButtonClick, sortVector).then((res) => {
+    Api.getTasks(page, button.drop, sortVector, sortToday).then((res) => {
       setTasks(res.data.tasks)
       setTaskNumber(res.data.total.length)
     })
@@ -139,88 +153,115 @@ export default function ToDo() {
             <AsideBlock
               id="today"
               onClick={() => {
-                handleButtonClick('today')
-                handleDoneClick('today')
+                handleButtonPush(
+                  button.main,
+                  button.drop,
+                  button.dropStatus,
+                  !button.todayStatus
+                )
+                changeSortToday()
               }}
-              active={buttonClick === 'today'}
+              active={button.todayStatus}
               type="button"
             >
               <AsideBlockImage
-                src={
-                  buttonClick === 'today' ? 'calendar.svg' : 'greyCalendar.svg'
-                }
+                src={button.todayStatus ? 'calendar.svg' : 'greyCalendar.svg'}
               ></AsideBlockImage>{' '}
               Today
             </AsideBlock>
             <AsideBlock
               id="all"
               onClick={() => {
-                handleButtonClick('all')
+                handleButtonPush(
+                  'All',
+                  button.drop,
+                  !button.dropStatus,
+                  button.todayStatus
+                )
               }}
-              active={buttonClick === 'all' || buttonClick === doneButtonClick}
+              active={button.main === 'All'}
               type="button"
             >
               <AsideBlockImage
                 src={
-                  buttonClick === 'all' || buttonClick === doneButtonClick
-                    ? 'purpleCircle.svg'
-                    : 'doneSolid.svg'
+                  button.main === 'All' ? 'purpleCircle.svg' : 'doneSolid.svg'
                 }
               ></AsideBlockImage>
-              {buttonClick === 'today' ? 'All' : doneButtonClick}
+              {button.drop}
             </AsideBlock>
             <AsideBlock
               id="date"
               onClick={() => {
-                handleButtonClick('date')
+                handleButtonPush(
+                  button.main,
+                  button.drop,
+                  button.dropStatus,
+                  button.todayStatus,
+                  !button.vectorStatus
+                )
                 changeSortVector()
               }}
-              active={buttonClick === 'date'}
-              display={buttonClick === 'all' ? 'none' : 'flex'}
+              active={button.vectorStatus}
+              display={button.dropStatus ? 'none' : 'flex'}
               type="button"
             >
               <AsideBlockImage
-                src={buttonClick === 'date' ? 'arrowsPurple.svg' : 'arrows.svg'}
+                src={button.vectorStatus ? 'arrowsPurple.svg' : 'arrows.svg'}
               ></AsideBlockImage>
               Date
             </AsideBlock>
           </AsideList>
-          <CommunistAsideList display={buttonClick === 'all' ? 'flex' : 'none'}>
+          <CommunistAsideList display={button.dropStatus ? 'flex' : 'none'}>
             <CommunistAsideBlock
               id="All"
-              active={doneButtonClick === 'All'}
+              active={button.drop === 'All'}
               type="button"
               backgroundColor={
-                doneButtonClick === 'All' ? 'rgba(147, 51, 234, 0.2)' : ''
+                button.drop === 'All' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('All')
+                handleButtonPush(
+                  button.main,
+                  'All',
+                  button.dropStatus,
+                  button.todayStatus
+                )
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
             </CommunistAsideBlock>
             <CommunistAsideBlock
               id="Done"
-              active={doneButtonClick === 'Done'}
+              active={button.drop === 'Done'}
               type="button"
               backgroundColor={
-                doneButtonClick === 'Done' ? 'rgba(147, 51, 234, 0.2)' : ''
+                button.drop === 'Done' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('Done')
+                handleButtonPush(
+                  button.main,
+                  'Done',
+                  button.dropStatus,
+                  button.todayStatus
+                )
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
             </CommunistAsideBlock>
             <CommunistAsideBlock
               id="Undone"
-              active={doneButtonClick === 'Undone'}
+              active={button.drop === 'Undone'}
               type="button"
               backgroundColor={
-                doneButtonClick === 'Undone' ? 'rgba(147, 51, 234, 0.2)' : ''
+                button.drop === 'Undone' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleDoneClick('Undone')
+                handleButtonPush(
+                  button.main,
+                  'Undone',
+                  button.dropStatus,
+                  button.todayStatus
+                )
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
@@ -249,7 +290,6 @@ export default function ToDo() {
               taskKey={task.id}
               taskTag={task.name.trim()}
               taskDate={task.date}
-              partialDate={task.partialDate}
               tasks={tasks}
               deleteTask={deleteTask}
               returnDeleteModal={returnDeleteModal}
@@ -268,6 +308,7 @@ export default function ToDo() {
         setIsOpen={handleModalOpen}
         poly={'create'}
         inputValue={inputValue}
+        setInputValue={setInputValue}
         handleInputChange={handleInputChange}
         addTask={insertInputValue}
       />
@@ -278,6 +319,7 @@ export default function ToDo() {
           postsPerPage={postsPerPage}
           totalPosts={taskNumber}
           handlePage={handlePage}
+          currentPage={page}
         />
       )}
     </ToDoContainer>

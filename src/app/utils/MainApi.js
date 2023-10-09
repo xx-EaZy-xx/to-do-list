@@ -5,12 +5,13 @@ export class MainApi {
     this._url = config.url
   }
 
-  getTasks(page = 1, filter = 'All', sortVector) {
+  getTasks(page = 1, filter = 'All', sortVector, today = 'any') {
     return axios.get(`${this._url}/tasks`, {
       params: {
         page,
         filter,
         sortVector,
+        today,
       },
     })
   }

@@ -17,7 +17,6 @@ export default function Task({
   taskKey,
   taskTag,
   taskDate,
-  partialDate,
   deleteTask,
   returnDeleteModal,
   modalDeleteIsOpen,
@@ -29,8 +28,14 @@ export default function Task({
   const [arePointsPushed, setArePointsPushed] = useState(false)
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
+  const [placeholder, setPlaceholder] = useState('')
 
   const inputRef = useRef(null)
+
+  function handleValidation(arg) {
+    setPlaceholder(arg)
+    return
+  }
 
   function handleInputChange(e) {
     setInputValue(e.target.value)
@@ -43,11 +48,13 @@ export default function Task({
     if (inputIsFocused === false) {
       inputRef.current.focus()
       setInputIsFocused(true)
-    } else {
+    }
+    if (inputIsFocused === true) {
       inputRef.current.blur()
       setInputIsFocused(false)
-      Api.updateTask({ taskName: inputValue, taskId: taskKey })
-      handleFetch()
+      Api.updateTask({ taskName: inputValue, taskId: taskKey }).then(() =>
+        handleFetch()
+      )
     }
   }
 
@@ -122,13 +129,20 @@ export default function Task({
                 type="text"
                 ref={inputRef}
                 value={inputValue}
+                placeholder={placeholder}
                 backgroundColor={inputIsFocused ? 'white' : 'transparent'}
                 border={inputIsFocused ? '1px solid blue' : 'none'}
                 onFocus={(e) => {
-                  handleInputFocus(e)
+                  if (inputValue.trim() !== '') {
+                    handleInputFocus(e)
+                  }
                 }}
                 onBlur={(e) => {
-                  handleInputFocus(e)
+                  if (inputValue.trim() !== '') {
+                    handleInputFocus(e)
+                  } else {
+                    handleValidation('I need a name!')
+                  }
                 }}
                 onChange={(e) => {
                   handleInputChange(e)

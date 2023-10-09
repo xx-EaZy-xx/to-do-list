@@ -115,7 +115,7 @@ export const TaskInput = styled.input`
   transition: 0.1s;
 
   &::placeholder {
-    color: black;
+    color: rgb(120, 120, 120);
     opacity: 1;
   }
 `
