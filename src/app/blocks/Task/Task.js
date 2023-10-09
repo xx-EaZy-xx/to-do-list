@@ -17,6 +17,7 @@ export default function Task({
   taskKey,
   taskTag,
   taskDate,
+  partialDate,
   deleteTask,
   returnDeleteModal,
   modalDeleteIsOpen,

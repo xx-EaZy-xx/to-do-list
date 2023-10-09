@@ -21,6 +21,9 @@ module.exports = {
       date: {
         type: Sequelize.STRING,
       },
+      partialDate: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

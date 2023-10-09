@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: new Date().toLocaleString().replaceAll('.', '/'),
       },
+      partialDate: {
+        type: DataTypes.STRING,
+        defaultValue: new Date().toLocaleString().slice(0, 10),
+      },
     },
     {
       timestamps: true,

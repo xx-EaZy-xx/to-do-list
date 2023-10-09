@@ -18,10 +18,10 @@ const getTasks = (req, res, next) => {
       })
   }
 
-  if (req.query.filter === 'Today') {
+  if (req.query.today === 'today') {
     getThemAll({
-      where: { date: new Date().toLocaleString().slice(0, 10) },
-      order: [['id']],
+      where: { partialDate: new Date().toLocaleString().slice(0, 10) },
+      order: [['date']],
       offset,
       limit,
     })
@@ -67,7 +67,11 @@ const getTasks = (req, res, next) => {
 }
 
 const createTasks = async (req, res, next) => {
-  Task.create({ name: req.body.name, date: req.body.date })
+  Task.create({
+    name: req.body.name,
+    date: req.body.date,
+    partialDate: req.body.partialDate,
+  })
     .then((task) => {
       res.send(task)
     })

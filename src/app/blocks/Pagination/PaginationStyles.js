@@ -21,6 +21,7 @@ export const PageContainer = styled.nav`
   padding-top: 4px;
   transition: 0.1s;
   margin-top: 8px;
+  overflow-y: hidden;
 
   &:hover {
     background-color: rgba(146, 51, 234, 0.2);

@@ -25,7 +25,7 @@ import Pagination from '../Pagination/Pagination'
 
 export default function ToDo() {
   //Имя пользователя - позже будет приходить с сервера
-  const [userName] = useState('UserName')
+  const [userName] = useState('XxX_Oleg_XxX')
   //Массив тасок (с начальным тестовым значением)
   const [tasks, setTasks] = useState([])
   const [taskNumber, setTaskNumber] = useState(0)
@@ -41,7 +41,7 @@ export default function ToDo() {
   //Сохранение значения инпута модалки создания тасок
   const [inputValue, setInputValue] = useState('')
   //Боковые кнопки
-  const [buttonClick, setButtonClick] = useState('today')
+  const [buttonClick, setButtonClick] = useState('all')
   const [doneButtonClick, setDoneButtonClick] = useState('All')
 
   //Немного пагинации
@@ -92,9 +92,10 @@ export default function ToDo() {
 
   //Удаление задач
   function deleteTask(taskId) {
-    Api.deleteTask(taskId)
-    const puredArr = tasks.filter((el) => el.key !== taskId)
-    setTasks(puredArr)
+    Api.deleteTask(taskId).then(() => {
+      const puredArr = tasks.filter((el) => el.key !== taskId)
+      setTasks(puredArr)
+    })
   }
   function returnDeleteModal(arg) {
     return (
@@ -112,15 +113,14 @@ export default function ToDo() {
   }
   //Добавление новых задач
   function addNewTask(name) {
-    Api.postTask({ name })
-    handleFetch()
+    Api.postTask({ name }).then(() => handleFetch())
   }
   //Запросы с сервера
   function handleFetch() {
     setTimeToFetch(!timeToFetch)
   }
   useEffect(() => {
-    Api.getTasks(page, doneButtonClick, sortVector).then((res) => {
+    Api.getTasks(page, doneButtonClick, buttonClick, sortVector).then((res) => {
       setTasks(res.data.tasks)
       setTaskNumber(res.data.total.length)
     })
@@ -139,6 +139,7 @@ export default function ToDo() {
               id="today"
               onClick={() => {
                 handleButtonClick('today')
+                handleDoneClick('today')
               }}
               active={buttonClick === 'today'}
               type="button"
@@ -165,7 +166,7 @@ export default function ToDo() {
                     : 'doneSolid.svg'
                 }
               ></AsideBlockImage>
-              {doneButtonClick}
+              {buttonClick === 'today' ? 'All' : doneButtonClick}
             </AsideBlock>
             <AsideBlock
               id="date"
@@ -247,6 +248,7 @@ export default function ToDo() {
               taskKey={task.id}
               taskTag={task.name.trim()}
               taskDate={task.date}
+              partialDate={task.partialDate}
               tasks={tasks}
               deleteTask={deleteTask}
               returnDeleteModal={returnDeleteModal}
@@ -268,11 +270,15 @@ export default function ToDo() {
         handleInputChange={handleInputChange}
         addTask={insertInputValue}
       />
-      <Pagination
-        postsPerPage={postsPerPage}
-        totalPosts={taskNumber}
-        handlePage={handlePage}
-      />
+      {taskNumber <= postsPerPage ? (
+        ''
+      ) : (
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={taskNumber}
+          handlePage={handlePage}
+        />
+      )}
     </ToDoContainer>
   )
 }

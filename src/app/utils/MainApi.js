@@ -5,11 +5,12 @@ export class MainApi {
     this._url = config.url
   }
 
-  getTasks(page = 1, filter = 'All', sortVector) {
+  getTasks(page = 1, filter = 'All', today = 'any', sortVector) {
     return axios.get(`${this._url}/tasks`, {
       params: {
         page,
         filter,
+        today,
         sortVector,
       },
     })
@@ -18,12 +19,12 @@ export class MainApi {
   postTask({
     name = '<Nameless task>',
     date = new Date().toLocaleString(),
-    isDone = false,
+    partialDate = new Date().toLocaleString().slice(0, 10),
   }) {
     return axios.post(`${this._url}/tasks`, {
       name,
       date,
-      isDone,
+      partialDate,
     })
   }
 
