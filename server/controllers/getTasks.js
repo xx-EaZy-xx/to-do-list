@@ -8,7 +8,7 @@ const getAllTasks = async (req, res, next) => {
     const offset = (req.query.page - 1) * pageSize
     const limit = pageSize
     const { filter, sortVector, today } = req.query
-    const tasks = await Task.findAll({
+    const { where, order } = {
       where: {
         isDone:
           filter === 'All'
@@ -27,16 +27,23 @@ const getAllTasks = async (req, res, next) => {
           `${sortVector === 'ASC' && sortVector !== 'DESC' ? 'ASC' : 'DESC'}`,
         ],
       ],
+    }
+    const tasks = await Task.findAll({
+      where,
+      order,
       offset,
       limit,
     })
-    return res.status(200).json(tasks)
+    const total = await Task.findAll({
+      where,
+      order,
+    })
+    return res.status(200).json({ tasks, total })
   } catch (err) {
     console.log(err)
     return next(createError(404, 'Задачи не были найдены'))
   }
 }
-
 module.exports = {
   getAllTasks,
 }

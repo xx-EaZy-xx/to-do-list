@@ -56,14 +56,15 @@ export default function ToDo() {
   }
   //Нажатие кнопок
 
-  function handleButtonPush(arg, arg2, arg3, arg4, arg5) {
-    setButton({
-      main: arg,
-      drop: arg2 ?? button.drop,
-      dropStatus: !!arg3 ?? !!button.dropStatus,
-      todayStatus: !!arg4 ?? !!button.todayStatus,
-      vectorStatus: !!arg5 ?? !!button.vectorStatus,
-    })
+  function handleButtonPush({
+    main = button.main,
+    drop = button.drop,
+    dropStatus = button.dropStatus,
+    todayStatus = button.todayStatus,
+    vectorStatus = button.vectorStatus,
+  }) {
+    setButton({ main, drop, dropStatus, todayStatus, vectorStatus })
+    setPage(1)
     handleFetch()
   }
 
@@ -73,7 +74,6 @@ export default function ToDo() {
     } else if (sortToday === 'any') {
       setSortToday('today')
     }
-    handlePage(1)
   }
 
   function changeSortVector() {
@@ -136,8 +136,8 @@ export default function ToDo() {
   }
   useEffect(() => {
     Api.getTasks(page, button.drop, sortVector, sortToday).then((res) => {
-      setTasks(res.data)
-      setTaskNumber(res.data.length)
+      setTasks(res.data.tasks)
+      setTaskNumber(res.data.total.length)
     })
   }, [timeToFetch])
   return (
@@ -152,12 +152,7 @@ export default function ToDo() {
           <AsideList>
             <AsideBlock
               onClick={() => {
-                handleButtonPush(
-                  button.main,
-                  button.drop,
-                  button.dropStatus,
-                  !button.todayStatus
-                )
+                handleButtonPush({ todayStatus: !button.todayStatus })
                 changeSortToday()
               }}
               active={button.todayStatus}
@@ -170,13 +165,10 @@ export default function ToDo() {
             </AsideBlock>
             <AsideBlock
               onClick={() => {
-                handleButtonPush(
-                  'All',
-                  button.drop,
-                  !button.dropStatus,
-                  button.todayStatus,
-                  button.vectorStatus
-                )
+                handleButtonPush({
+                  main: 'All',
+                  dropStatus: !button.dropStatus,
+                })
               }}
               active={true}
               type="button"
@@ -188,13 +180,7 @@ export default function ToDo() {
             </AsideBlock>
             <AsideBlock
               onClick={() => {
-                handleButtonPush(
-                  button.main,
-                  button.drop,
-                  button.dropStatus,
-                  button.todayStatus,
-                  !button.vectorStatus
-                )
+                handleButtonPush({ vectorStatus: !button.vectorStatus })
                 changeSortVector()
               }}
               active={button.vectorStatus}
@@ -215,13 +201,7 @@ export default function ToDo() {
                 button.drop === 'All' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleButtonPush(
-                  button.main,
-                  'All',
-                  button.dropStatus,
-                  button.todayStatus,
-                  button.vectorStatus
-                )
+                handleButtonPush({ drop: 'All' })
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
@@ -233,13 +213,7 @@ export default function ToDo() {
                 button.drop === 'Done' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleButtonPush(
-                  button.main,
-                  'Done',
-                  button.dropStatus,
-                  button.todayStatus,
-                  button.vectorStatus
-                )
+                handleButtonPush({ drop: 'Done' })
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
@@ -251,13 +225,7 @@ export default function ToDo() {
                 button.drop === 'Undone' ? 'rgba(147, 51, 234, 0.2)' : ''
               }
               onClick={() => {
-                handleButtonPush(
-                  button.main,
-                  'Undone',
-                  button.dropStatus,
-                  button.todayStatus,
-                  button.vectorStatus
-                )
+                handleButtonPush({ drop: 'Undone' })
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone

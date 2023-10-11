@@ -70,10 +70,9 @@ export default function Task({
       return
     }
   }
-
   function handleTaskDate() {
     const year = taskDate.slice(6, 10)
-    const month = `${taskDate.slice(3, 5) - 1}` //Проёб с нулями??? - Вроде нет!
+    const month = `${taskDate.slice(3, 5)}`
     const day = taskDate.slice(1, 2)
     const minutes = taskDate.slice(12, 17).replaceAll('.', ':')
     const dayOfTheWeek = new Date(year, month, day).getDay()
