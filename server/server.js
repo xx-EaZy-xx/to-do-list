@@ -1,10 +1,10 @@
 const express = require('express')
 require('dotenv').config()
 const cors = require('cors')
-const index = require('./routes/index')
 const limiter = require('./middlewares/limiter')
 const helmet = require('helmet')
 const db = require('./models')
+const recursive = require('recursive-readdir-sync')
 
 db.sequelize
   .sync()
@@ -17,22 +17,17 @@ db.sequelize
     next(err)
   })
 
-const { PORT } = process.env
+const { PORT, URI } = process.env
 
 const app = express()
-
-app.get('/api', (req, res) => {
-  res.send('Лови что-нибудь')
-})
-
-app.get('/api/else', (req, res) => {
-  res.send('Лови else')
-})
 
 app.use(limiter)
 app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-
-app.use(index)
+//---Recursive route collector---
+recursive(`${__dirname}/routes`).forEach((file) => {
+  console.log('FILES!', file)
+  app.use(URI, require(file))
+})

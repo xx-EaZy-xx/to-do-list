@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate-undo": "npx sequelize-cli db:migrate:undo"
   },
   "author": "Oleg Ostanin",
   "license": "ISC",
@@ -18,14 +20,18 @@
     "express-rate-limit": "^7.0.2",
     "express-winston": "^4.2.0",
     "fs": "^0.0.1-security",
+    "fs-readdir-recursive": "^1.1.0",
     "helmet": "^7.0.0",
+    "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "path": "^0.12.7",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
+    "recursive-readdir-sync": "^1.0.6",
     "sequelize": "^6.33.0",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.1",
+    "uuidv4": "^6.2.13",
     "validator": "^13.11.0",
     "winston": "^3.10.0"
   },

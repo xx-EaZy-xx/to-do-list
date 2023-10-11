@@ -32,7 +32,7 @@ export default function ToDo() {
   const [timeToFetch, setTimeToFetch] = useState(false)
   //Сортировка
   const [sortToday, setSortToday] = useState('any')
-  const [sortVector, setSortVector] = useState('DESC')
+  const [sortVector, setSortVector] = useState('ASC')
   //Пагинация
   const [page, setPage] = useState(1)
   const [postsPerPage] = useState(7)
@@ -43,7 +43,7 @@ export default function ToDo() {
   const [inputValue, setInputValue] = useState('')
   //Боковые кнопки
   const [button, setButton] = useState({
-    main: 'today',
+    main: 'All',
     drop: 'All',
     dropStatus: false,
     vectorStatus: false,
@@ -136,8 +136,8 @@ export default function ToDo() {
   }
   useEffect(() => {
     Api.getTasks(page, button.drop, sortVector, sortToday).then((res) => {
-      setTasks(res.data.tasks)
-      setTaskNumber(res.data.total.length)
+      setTasks(res.data)
+      setTaskNumber(res.data.length)
     })
   }, [timeToFetch])
   return (
@@ -148,10 +148,9 @@ export default function ToDo() {
         <CellImage src="profile.svg"></CellImage>
       </TopContainer>
       <BottomContainer>
-        <AsideContainer id="modal">
+        <AsideContainer>
           <AsideList>
             <AsideBlock
-              id="today"
               onClick={() => {
                 handleButtonPush(
                   button.main,
@@ -170,27 +169,24 @@ export default function ToDo() {
               Today
             </AsideBlock>
             <AsideBlock
-              id="all"
               onClick={() => {
                 handleButtonPush(
                   'All',
                   button.drop,
                   !button.dropStatus,
-                  button.todayStatus
+                  button.todayStatus,
+                  button.vectorStatus
                 )
               }}
-              active={button.main === 'All'}
+              active={true}
               type="button"
             >
               <AsideBlockImage
-                src={
-                  button.main === 'All' ? 'purpleCircle.svg' : 'doneSolid.svg'
-                }
+                src={button.drop ? 'purpleCircle.svg' : 'doneSolid.svg'}
               ></AsideBlockImage>
               {button.drop}
             </AsideBlock>
             <AsideBlock
-              id="date"
               onClick={() => {
                 handleButtonPush(
                   button.main,
@@ -213,7 +209,6 @@ export default function ToDo() {
           </AsideList>
           <CommunistAsideList display={button.dropStatus ? 'flex' : 'none'}>
             <CommunistAsideBlock
-              id="All"
               active={button.drop === 'All'}
               type="button"
               backgroundColor={
@@ -224,14 +219,14 @@ export default function ToDo() {
                   button.main,
                   'All',
                   button.dropStatus,
-                  button.todayStatus
+                  button.todayStatus,
+                  button.vectorStatus
                 )
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> All
             </CommunistAsideBlock>
             <CommunistAsideBlock
-              id="Done"
               active={button.drop === 'Done'}
               type="button"
               backgroundColor={
@@ -242,14 +237,14 @@ export default function ToDo() {
                   button.main,
                   'Done',
                   button.dropStatus,
-                  button.todayStatus
+                  button.todayStatus,
+                  button.vectorStatus
                 )
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
             </CommunistAsideBlock>
             <CommunistAsideBlock
-              id="Undone"
               active={button.drop === 'Undone'}
               type="button"
               backgroundColor={
@@ -260,7 +255,8 @@ export default function ToDo() {
                   button.main,
                   'Undone',
                   button.dropStatus,
-                  button.todayStatus
+                  button.todayStatus,
+                  button.vectorStatus
                 )
               }}
             >

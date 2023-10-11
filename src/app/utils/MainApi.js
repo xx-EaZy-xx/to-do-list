@@ -5,8 +5,8 @@ export class MainApi {
     this._url = config.url
   }
 
-  getTasks(page = 1, filter = 'All', sortVector, today = 'any') {
-    return axios.get(`${this._url}/tasks`, {
+  getTasks(page = 1, filter = 'All', sortVector = 'ASC', today = 'any') {
+    return axios.get(`${this._url}/tasks/get`, {
       params: {
         page,
         filter,
@@ -21,7 +21,7 @@ export class MainApi {
     date = new Date().toLocaleString(),
     partialDate = new Date().toLocaleString().slice(0, 10),
   }) {
-    return axios.post(`${this._url}/tasks`, {
+    return axios.post(`${this._url}/tasks/post`, {
       name,
       date,
       partialDate,
@@ -29,19 +29,19 @@ export class MainApi {
   }
 
   deleteTask(taskId) {
-    return axios.delete(`${this._url}/tasks`, {
+    return axios.delete(`${this._url}/tasks/delete`, {
       data: { id: taskId },
     })
   }
 
   updateTask({ taskName, taskId }) {
     if (taskName) {
-      return axios.patch(`${this._url}/tasks`, {
+      return axios.patch(`${this._url}/tasks/patch`, {
         name: taskName,
         id: taskId,
       })
     } else {
-      return axios.patch(`${this._url}/tasks`, {
+      return axios.patch(`${this._url}/tasks/patch`, {
         id: taskId,
       })
     }

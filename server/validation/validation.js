@@ -1,5 +1,10 @@
 const { Joi, celebrate } = require('celebrate')
 
+const uuidPattern =
+  /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+
+const maxSymbols = 100
+
 const signUpValidation = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -15,25 +20,31 @@ const signInValidation = celebrate({
   }),
 })
 
-const validateDeleteTask = celebrate({
-  params: Joi.object().keys({
-    _id: Joi.string()
-      .pattern(/[a-f0-9]{24,24}/)
-      .length(24),
+const postTaskValidation = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().max(maxSymbols),
+    date: Joi.string().required().max(maxSymbols),
+    partialDate: Joi.string().required().max(maxSymbols),
   }),
 })
 
-const validateCreateTask = celebrate({
+const deleteTaskValidation = celebrate({
   body: Joi.object().keys({
-    taskId: Joi.number().required(),
-    name: Joi.string().required(),
-    status: Joi.boolean().required,
+    id: Joi.string().pattern(uuidPattern),
+  }),
+})
+
+const patchTaskValidation = celebrate({
+  body: Joi.object().keys({
+    id: Joi.string().required().max(maxSymbols),
+    name: Joi.string().max(maxSymbols),
   }),
 })
 
 module.exports = {
   signUpValidation,
   signInValidation,
-  validateDeleteTask,
-  validateCreateTask,
+  postTaskValidation,
+  deleteTaskValidation,
+  patchTaskValidation,
 }

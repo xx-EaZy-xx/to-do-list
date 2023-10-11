@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
+      id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+      },
       isDone: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

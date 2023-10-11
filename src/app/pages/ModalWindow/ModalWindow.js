@@ -72,7 +72,6 @@ export default function ModalWindow({
   return (
     <ModalBackground
       visible={isOpen}
-      id="background"
       onClick={(e) => {
         handleOverlayClose(e)
       }}
@@ -145,3 +144,13 @@ export default function ModalWindow({
     </ModalBackground>
   )
 }
+
+// <Wrapper>
+// <div></div>
+// </Wrapper>
+
+// const Wrapper =() => (
+//   <Wrapper>
+//     {children}
+//   </Wrapper>
+// )
