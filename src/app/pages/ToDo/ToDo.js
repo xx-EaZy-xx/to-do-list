@@ -18,7 +18,7 @@ import {
   CommunistAsideList,
   CommunistAsideBlock,
   VanishingMessage,
-} from './ToDoStyles'
+} from './ToDo.styled'
 import Task from '../Task/Task'
 import ModalWindow from '../ModalWindow/ModalWindow'
 import Pagination from '../Pagination/Pagination'
@@ -26,36 +26,32 @@ import Pagination from '../Pagination/Pagination'
 export default function ToDo() {
   //Имя пользователя - позже будет приходить с сервера
   const [userName] = useState('XxX_Oleg_XxX')
-  //Массив тасок (с начальным тестовым значением)
+  //Массив тасок (с начальным пустым значением)
   const [tasks, setTasks] = useState([])
-  const [taskNumber, setTaskNumber] = useState(0)
+  const [totalTasks, setTotalTasks] = useState(0)
   const [timeToFetch, setTimeToFetch] = useState(false)
-  //Сортировка
-  const [sortToday, setSortToday] = useState('any')
-  const [sortVector, setSortVector] = useState('ASC')
-  //Пагинация
-  const [page, setPage] = useState(1)
-  const [postsPerPage] = useState(7)
   //Модальные окна
-  const [modalCreateIsOpen, setModalCreateIsOpen] = useState(false)
-  const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false)
-  //Сохранение значения инпута модалки создания тасок
-  const [inputValue, setInputValue] = useState('')
+  const [modalOpened, setModalOpened] = useState({
+    creation: false,
+    deletion: false,
+  })
   //Боковые кнопки
   const [button, setButton] = useState({
     main: 'All',
     drop: 'All',
     dropStatus: false,
-    vectorStatus: false,
+    todayStatus: 'any',
+    vectorStatus: 'ASC',
   })
+  //Пагинация
+  const [page, setPage] = useState(1)
+  const tasksPerPage = 7
 
-  //Немного пагинации
+  //Хэндлер пагинации
   function handlePage(arg) {
     setPage(arg)
-    handleFetch()
   }
   //Нажатие кнопок
-
   function handleButtonPush({
     main = button.main,
     drop = button.drop,
@@ -64,45 +60,55 @@ export default function ToDo() {
     vectorStatus = button.vectorStatus,
   }) {
     setButton({ main, drop, dropStatus, todayStatus, vectorStatus })
-    setPage(1)
     handleFetch()
   }
-
-  function changeSortToday() {
-    if (sortToday === 'today') {
-      setSortToday('any')
-    } else if (sortToday === 'any') {
-      setSortToday('today')
+  function toggleSortToday() {
+    if (button.todayStatus === 'today') {
+      Math.ceil(totalTasks.length / tasksPerPage)
+      handleButtonPush({ todayStatus: 'any' })
+    } else if (button.todayStatus === 'any') {
+      handleButtonPush({ todayStatus: 'today' })
     }
+    handlePage(1)
   }
-
-  function changeSortVector() {
-    if (sortVector === 'ASC') {
-      setSortVector('DESC')
-    } else if (sortVector === 'DESC') {
-      setSortVector('ASC')
+  function toggleSortVector() {
+    if (button.vectorStatus === 'ASC') {
+      handleButtonPush({ vectorStatus: 'DESC' })
+    } else if (button.vectorStatus === 'DESC') {
+      handleButtonPush({ vectorStatus: 'ASC' })
     }
   }
 
   //Модальные окна
-  function handleModalOpen(arg) {
-    setModalCreateIsOpen(arg)
-    setInputValue('')
+  function handleModalCreateOpen(arg) {
+    setModalOpened({ creation: arg ?? !modalOpened.creation })
   }
 
   function handleModalDeleteOpen(arg) {
-    setModalDeleteIsOpen(arg)
+    setModalOpened({ deletion: arg ?? !modalOpened.deletion })
   }
 
-  function handleInputChange(e) {
-    setInputValue(e.target.value)
-  }
-  function insertInputValue() {
-    if (inputValue.trim() !== '') {
-      addNewTask(inputValue)
-    } else {
-      return
-    }
+  function returnModal(modal, taskId) {
+    return modal === 'create' ? (
+      <ModalWindow
+        isOpen={modalOpened.creation}
+        setIsOpen={handleModalCreateOpen}
+        poly={'create'}
+        handleFetch={handleFetch}
+      />
+    ) : (
+      <ModalWindow
+        taskId={taskId}
+        isOpen={modalOpened.deletion}
+        setIsOpen={handleModalDeleteOpen}
+        poly={'delete'}
+        deleteTask={() => {
+          deleteTask(taskId)
+          handleModalDeleteOpen(false)
+          handleFetch()
+        }}
+      />
+    )
   }
 
   //Удаление задач
@@ -110,36 +116,26 @@ export default function ToDo() {
     Api.deleteTask(taskId).then(() => {
       const puredArr = tasks.filter((el) => el.key !== taskId)
       setTasks(puredArr)
+      handleFetch()
     })
-  }
-  function returnDeleteModal(arg) {
-    return (
-      <ModalWindow
-        taskId={arg}
-        isOpen={modalDeleteIsOpen}
-        setIsOpen={handleModalDeleteOpen}
-        poly={'delete'}
-        deleteTask={() => {
-          deleteTask(arg)
-          handleFetch()
-        }}
-      />
-    )
-  }
-  //Добавление новых задач
-  function addNewTask(name) {
-    Api.postTask({ name }).then(() => handleFetch())
   }
   //Запросы с сервера
   function handleFetch() {
     setTimeToFetch(!timeToFetch)
   }
   useEffect(() => {
-    Api.getTasks(page, button.drop, sortVector, sortToday).then((res) => {
-      setTasks(res.data.tasks)
-      setTaskNumber(res.data.total.length)
+    Api.getTasks(
+      page,
+      button.drop,
+      button.vectorStatus,
+      button.todayStatus
+    ).then((res) => {
+      const { tasks, total } = res.data
+      setTasks(tasks)
+      setTotalTasks(total)
+      tasks === 0 ? setPage(page - 1) : ''
     })
-  }, [timeToFetch])
+  }, [timeToFetch, page]) //Нужно дописать зависимости вместо timeToFetch
   return (
     <ToDoContainer>
       <TopContainer>
@@ -153,13 +149,17 @@ export default function ToDo() {
             <AsideBlock
               onClick={() => {
                 handleButtonPush({ todayStatus: !button.todayStatus })
-                changeSortToday()
+                toggleSortToday()
               }}
-              active={button.todayStatus}
+              active={button.todayStatus === 'today'}
               type="button"
             >
               <AsideBlockImage
-                src={button.todayStatus ? 'calendar.svg' : 'greyCalendar.svg'}
+                src={
+                  button.todayStatus === 'today'
+                    ? 'calendar.svg'
+                    : 'greyCalendar.svg'
+                }
               ></AsideBlockImage>{' '}
               Today
             </AsideBlock>
@@ -180,15 +180,18 @@ export default function ToDo() {
             </AsideBlock>
             <AsideBlock
               onClick={() => {
-                handleButtonPush({ vectorStatus: !button.vectorStatus })
-                changeSortVector()
+                toggleSortVector()
               }}
-              active={button.vectorStatus}
+              active={button.vectorStatus === 'DESC'}
               display={button.dropStatus ? 'none' : 'flex'}
               type="button"
             >
               <AsideBlockImage
-                src={button.vectorStatus ? 'arrowsPurple.svg' : 'arrows.svg'}
+                src={
+                  button.vectorStatus === 'DESC'
+                    ? 'arrowsPurple.svg'
+                    : 'arrows.svg'
+                }
               ></AsideBlockImage>
               Date
             </AsideBlock>
@@ -214,6 +217,7 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleButtonPush({ drop: 'Done' })
+                handlePage(1)
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
@@ -226,6 +230,7 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleButtonPush({ drop: 'Undone' })
+                handlePage(1)
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
@@ -233,7 +238,7 @@ export default function ToDo() {
           </CommunistAsideList>
           <AsideBlockTask
             onClick={() => {
-              handleModalOpen(true)
+              handleModalCreateOpen(true)
             }}
           >
             <AsideBlockTaskInnerBox>
@@ -250,16 +255,12 @@ export default function ToDo() {
           )}
           {tasks.map((task) => (
             <Task
+              task={task}
               key={task.id}
-              taskKey={task.id}
-              taskTag={task.name.trim()}
-              taskDate={task.date}
-              tasks={tasks}
               deleteTask={deleteTask}
-              returnDeleteModal={returnDeleteModal}
-              modalDeleteIsOpen={modalDeleteIsOpen}
-              setModalDeleteIsOpen={setModalDeleteIsOpen}
-              done={task.isDone}
+              returnDeleteModal={returnModal}
+              modalDeleteIsOpen={modalOpened.deletion}
+              setModalDeleteIsOpen={handleModalDeleteOpen}
               handleFetch={() => {
                 handleFetch()
               }}
@@ -267,23 +268,15 @@ export default function ToDo() {
           ))}
         </BottomBlockContainer>
       </BottomContainer>
-      <ModalWindow
-        isOpen={modalCreateIsOpen}
-        setIsOpen={handleModalOpen}
-        poly={'create'}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        handleInputChange={handleInputChange}
-        addTask={insertInputValue}
-      />
-      {taskNumber <= postsPerPage ? (
+      {returnModal('create')}
+      {totalTasks.length <= tasksPerPage ? (
         ''
       ) : (
         <Pagination
-          postsPerPage={postsPerPage}
-          totalPosts={taskNumber}
+          tasksPerPage={tasksPerPage}
+          totalTasks={totalTasks}
           handlePage={handlePage}
-          currentPage={page}
+          page={page}
         />
       )}
     </ToDoContainer>

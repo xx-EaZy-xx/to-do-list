@@ -10,33 +10,28 @@ import {
   LittleBox,
   LittleBoxLeft,
   TaskInput,
-} from './TaskStyles'
+} from './Task.styled'
 import TaskEdition from '../TaskEdition/TaskEdition'
 
 export default function Task({
-  taskKey,
-  taskTag,
-  taskDate,
+  task,
   deleteTask,
   returnDeleteModal,
   modalDeleteIsOpen,
   setModalDeleteIsOpen,
-  done,
   handleFetch,
 }) {
-  const [taskStatus, setTaskStatus] = useState(done)
+  const [taskStatus, setTaskStatus] = useState(task.isDone)
   const [arePointsPushed, setArePointsPushed] = useState(false)
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [placeholder, setPlaceholder] = useState('')
 
   const inputRef = useRef(null)
-
   function handleValidation(arg) {
     setPlaceholder(arg)
     return
   }
-
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
@@ -52,7 +47,7 @@ export default function Task({
     if (inputIsFocused === true) {
       inputRef.current.blur()
       setInputIsFocused(false)
-      Api.updateTask({ taskName: inputValue, taskId: taskKey }).then(() =>
+      Api.updateTask({ taskName: inputValue, taskId: task.Id }).then(() =>
         handleFetch()
       )
     }
@@ -71,10 +66,10 @@ export default function Task({
     }
   }
   function handleTaskDate() {
-    const year = taskDate.slice(6, 10)
-    const month = `${taskDate.slice(3, 5)}`
-    const day = taskDate.slice(1, 2)
-    const minutes = taskDate.slice(12, 17).replaceAll('.', ':')
+    const year = task.date.slice(6, 10)
+    const month = `${task.date.slice(3, 5)}`
+    const day = task.date.slice(1, 2)
+    const minutes = task.date.slice(12, 17).replaceAll('.', ':')
     const dayOfTheWeek = new Date(year, month, day).getDay()
     function getDayOfTheWeek(day) {
       if (day === new Date().getDay()) {
@@ -95,7 +90,9 @@ export default function Task({
         return 'Saturday'
       }
     }
-    return `${getDayOfTheWeek(dayOfTheWeek)} at ${minutes}`
+    return `${getDayOfTheWeek(dayOfTheWeek)} on ${task.date
+      .slice(0, 10)
+      .replaceAll('/', '.')} at ${minutes}`
   }
 
   useEffect(() => {
@@ -104,77 +101,75 @@ export default function Task({
   })
 
   useEffect(() => {
-    setInputValue(taskTag)
+    setInputValue(task.name.trim())
   }, [])
 
   return (
-    <>
-      <SupremeTaskBox>
-        <MainTaskBox>
-          <ButtonBox>
-            <TaskImage
-              onClick={() => {
-                handlePush(taskStatus, setTaskStatus)
-                Api.updateTask({ taskId: taskKey })
-                handleFetch()
+    <SupremeTaskBox>
+      <MainTaskBox>
+        <ButtonBox>
+          <TaskImage
+            onClick={() => {
+              handlePush(taskStatus, setTaskStatus)
+              Api.updateTask({ taskId: task.id })
+              handleFetch()
+            }}
+            src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
+            alt="кнопка завершить задачу - галочка"
+          ></TaskImage>
+        </ButtonBox>
+        <TaskBox>
+          <LittleBox>
+            <TaskInput
+              type="text"
+              ref={inputRef}
+              value={inputValue}
+              placeholder={placeholder}
+              backgroundColor={inputIsFocused ? 'white' : 'transparent'}
+              border={inputIsFocused ? '1px solid blue' : 'none'}
+              onFocus={(e) => {
+                if (inputValue.trim() !== '') {
+                  handleInputFocus(e)
+                }
               }}
-              src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
-              alt="кнопка завершить задачу - галочка"
-            ></TaskImage>
-          </ButtonBox>
-          <TaskBox>
-            <LittleBox>
-              <TaskInput
-                type="text"
-                ref={inputRef}
-                value={inputValue}
-                placeholder={placeholder}
-                backgroundColor={inputIsFocused ? 'white' : 'transparent'}
-                border={inputIsFocused ? '1px solid blue' : 'none'}
-                onFocus={(e) => {
-                  if (inputValue.trim() !== '') {
-                    handleInputFocus(e)
-                  }
-                }}
-                onBlur={(e) => {
-                  if (inputValue.trim() !== '') {
-                    handleInputFocus(e)
-                  } else {
-                    handleValidation('I need a name!')
-                  }
-                }}
-                onChange={(e) => {
-                  handleInputChange(e)
-                }}
-              ></TaskInput>
-            </LittleBox>
-            <LittleBoxLeft>
-              {handleTaskDate()}
-              <ButtonBox
-                onClick={() => {
-                  handlePush(arePointsPushed, setArePointsPushed)
-                }}
-              >
-                <TaskImageLeft
-                  src="points.svg"
-                  alt="кнопка ещё - 3 точки"
-                ></TaskImageLeft>
-              </ButtonBox>
-            </LittleBoxLeft>
-          </TaskBox>
-        </MainTaskBox>
-        {arePointsPushed ? (
-          <TaskEdition
-            focusInput={handleInputFocus}
-            deleteTask={deleteTask}
-            returnDeleteModal={returnDeleteModal(taskKey)}
-            modalDeleteIsOpen={modalDeleteIsOpen}
-            setModalDeleteIsOpen={setModalDeleteIsOpen}
-          />
-        ) : (
-          ''
-        )}
-      </SupremeTaskBox>
-    </>
+              onBlur={(e) => {
+                if (inputValue.trim() !== '') {
+                  handleInputFocus(e)
+                } else {
+                  handleValidation('I need a name!')
+                }
+              }}
+              onChange={(e) => {
+                handleInputChange(e)
+              }}
+            ></TaskInput>
+          </LittleBox>
+          <LittleBoxLeft>
+            {handleTaskDate()}
+            <ButtonBox
+              onClick={() => {
+                handlePush(arePointsPushed, setArePointsPushed)
+              }}
+            >
+              <TaskImageLeft
+                src="points.svg"
+                alt="кнопка ещё - 3 точки"
+              ></TaskImageLeft>
+            </ButtonBox>
+          </LittleBoxLeft>
+        </TaskBox>
+      </MainTaskBox>
+      {arePointsPushed ? (
+        <TaskEdition
+          focusInput={handleInputFocus}
+          deleteTask={deleteTask}
+          returnDeleteModal={returnDeleteModal('delete', task.id)}
+          modalDeleteIsOpen={modalDeleteIsOpen}
+          setModalDeleteIsOpen={setModalDeleteIsOpen}
+        />
+      ) : (
+        ''
+      )}
+    </SupremeTaskBox>
   )
 }

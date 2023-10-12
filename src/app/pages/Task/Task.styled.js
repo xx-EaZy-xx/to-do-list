@@ -102,6 +102,7 @@ export const TaskImageLeft = styled.img`
 export const LittleBoxLeft = styled(LittleBox)`
   color: rgb(107, 114, 128);
   font-size: 14px;
+  margin-right: 0;
 `
 
 export const TaskInput = styled.input`

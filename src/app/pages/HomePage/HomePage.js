@@ -1,4 +1,4 @@
-import { PrimeContainer } from './HomePageStyles'
+import { PrimeContainer } from './HomePage.styled'
 import ToDo from '../ToDo/ToDo'
 import Title from '../Title/Title'
 

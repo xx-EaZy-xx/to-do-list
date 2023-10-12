@@ -10,7 +10,7 @@ export const EditBox = styled.div`
   min-width: 53px;
   max-width: 53px;
   height: 24px;
-  margin: 0 22px 14px auto;
+  margin: 0 6px 14px auto;
   transition: 0.1s;
   z-index: 1;
 

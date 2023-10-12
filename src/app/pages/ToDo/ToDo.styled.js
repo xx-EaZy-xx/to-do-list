@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const ToDoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 672px;
+  width: fit-content;
   transition: transform 2s ease-in-out;
 `
 
@@ -12,12 +12,11 @@ export const TopContainer = styled.section`
   flex-direction: row;
   padding: 3px 16px 3px 16px;
   background-color: white;
-  min-width: 640px;
-  max-width: 672px;
+  width: 735px;
   min-height: 44px;
   justify-content: space-between;
   border-radius: 10px;
-  margin: auto 90px 31px auto;
+  margin: auto auto 31px auto;
   align-items: center;
 
   @media (max-width: 1268px) {
@@ -45,14 +44,16 @@ export const CellImage = styled.img`
 `
 
 export const BottomContainer = styled.div`
-  max-width: 672px;
+  width: 100%;
   display: flex;
+  gap: auto;
   flex-direction: row;
   justify-content: space-between;
 `
 
 export const BottomBlockContainer = styled.div`
-  min-width: 466px;
+  min-width: 540px;
+  width: fit-content;
   background-color: white;
   border-radius: 10px;
   min-height: 312px;

@@ -1,13 +1,13 @@
 import React from 'react'
-import { PageContainer, PageButton } from './PaginationStyles'
+import { PageContainer, PageButton } from './Pagination.styled'
 
 export default function Pagination({
-  postsPerPage,
-  totalPosts,
+  tasksPerPage,
+  totalTasks,
   handlePage,
-  currentPage,
+  page,
 }) {
-  const pageCount = Math.ceil(totalPosts / postsPerPage)
+  const pageCount = Math.ceil(totalTasks.length / tasksPerPage)
   const pageNumbers = Array.from({ length: pageCount }).map(
     (el, index) => index + 1
   )
@@ -21,7 +21,7 @@ export default function Pagination({
             onClick={() => {
               handlePage(number)
             }}
-            current={number === currentPage ? true : false}
+            current={number === page ? true : false}
           >
             {number}
           </PageButton>

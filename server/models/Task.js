@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     'Task',
     {
       name: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
           notEmpty: true,

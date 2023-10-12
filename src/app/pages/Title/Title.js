@@ -1,4 +1,4 @@
-import { TitleContainer, Title, TitlePurple } from './TitleStyles'
+import { TitleContainer, Title, TitlePurple } from './Title.styled'
 
 export default function ToDo({}) {
   return (

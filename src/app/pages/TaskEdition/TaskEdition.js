@@ -1,5 +1,5 @@
 import React from 'react'
-import { EditBox, EditImage, EditButtonBox } from './TaskEditionStyles'
+import { EditBox, EditImage, EditButtonBox } from './TaskEdition.styled'
 
 export default function TaskEdition({
   focusInput,
