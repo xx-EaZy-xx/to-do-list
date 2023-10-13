@@ -44,13 +44,13 @@ export default function ModalWindow({
         handleFetch()
         if (errorStatus === 409) {
           setPlaceHolder(invalidMessage.sameness)
-        }
+        } else setIsOpen(false)
       }
     } catch (err) {
       console.log(err)
     }
   }
-
+  //Управляемый инпут
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
