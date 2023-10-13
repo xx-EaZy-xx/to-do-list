@@ -47,10 +47,6 @@ export default function ToDo() {
   const [page, setPage] = useState(1)
   const tasksPerPage = 7
 
-  //Хэндлер пагинации
-  function handlePage(arg) {
-    setPage(arg)
-  }
   //Нажатие кнопок
   function handleButtonPush({
     main = button.main,
@@ -69,7 +65,6 @@ export default function ToDo() {
     } else if (button.todayStatus === 'any') {
       handleButtonPush({ todayStatus: 'today' })
     }
-    handlePage(1)
   }
   function toggleSortVector() {
     if (button.vectorStatus === 'ASC') {
@@ -133,9 +128,10 @@ export default function ToDo() {
       const { tasks, total } = res.data
       setTasks(tasks)
       setTotalTasks(total)
-      tasks === 0 ? setPage(page - 1) : ''
+      //Возврат на предыдущую страницу, если данная страница пуста
+      tasks.length === 0 && page > 1 ? setPage(page - 1) : ''
     })
-  }, [timeToFetch, page]) //Нужно дописать зависимости вместо timeToFetch
+  }, [timeToFetch, page])
   return (
     <ToDoContainer>
       <TopContainer>
@@ -217,7 +213,6 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleButtonPush({ drop: 'Done' })
-                handlePage(1)
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Done
@@ -230,7 +225,6 @@ export default function ToDo() {
               }
               onClick={() => {
                 handleButtonPush({ drop: 'Undone' })
-                handlePage(1)
               }}
             >
               <AsideBlockImage src="purpleCircle.svg"></AsideBlockImage> Undone
@@ -275,7 +269,7 @@ export default function ToDo() {
         <Pagination
           tasksPerPage={tasksPerPage}
           totalTasks={totalTasks}
-          handlePage={handlePage}
+          setPage={setPage}
           page={page}
         />
       )}

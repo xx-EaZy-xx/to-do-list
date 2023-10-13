@@ -26,33 +26,41 @@ export default function ModalWindow({
 }) {
   const [placeholder, setPlaceHolder] = useState('Enter text...')
   const [inputValue, setInputValue] = useState('')
+  const [valError, setValError] = useState('')
   const modalInput = useRef(null)
   const trashButton = useRef(null)
+  const invalidMessage = {
+    emptiness: 'Empty space is not a valid task name!',
+    sameness: 'Task with this name already exists!',
+  }
   //Создание новой таски
   async function addNewTask(name) {
     try {
-      await Api.postTask({ name }).then(() => handleFetch())
+      if (inputValue.trim() !== '') {
+        const error = await Api.postTask({ name })
+        const errorStatus = +error.message?.slice(-3) ?? ''
+        setValError(errorStatus)
+        console.log(valError)
+        handleFetch()
+        if (errorStatus === 409) {
+          setPlaceHolder(invalidMessage.sameness)
+        }
+      }
     } catch (err) {
       console.log(err)
     }
   }
-  function insertInputValue() {
-    if (inputValue.trim() !== '') {
-      addNewTask(inputValue)
-      setIsOpen(false)
-    }
-  }
+
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
-  //Создание новой таски
 
+  //Валидация единственного инпута
   function handleValidation(arg) {
-    setInputValue('')
     setPlaceHolder(arg)
     return
   }
-
+  //Клавиатурные действия
   function handleOverlayClose(e) {
     e.target === e.currentTarget ? setIsOpen(false) : ''
   }
@@ -68,12 +76,11 @@ export default function ModalWindow({
       setInputValue('')
     }
     if (e.key === 'Enter' && modalInput.current) {
-      if (!!insertInputValue) {
-        insertInputValue()
+      if (!!addNewTask) {
+        addNewTask(inputValue.trim())
       }
     }
   }
-
   useEffect(() => {
     setInputValue('')
     if (modalInput.current) {
@@ -97,17 +104,16 @@ export default function ModalWindow({
             </ModalHeader>
             {poly === 'create' ? (
               <ModalInput
+                invalid={valError === 409 ? true : false}
                 ref={modalInput}
                 value={inputValue}
                 onChange={(e) => {
                   handleInputChange(e)
                 }}
                 onKeyDown={(e) => {
-                  if (inputValue.trim() === '') {
-                    handleValidation('Empty space is not a valid task name')
-                  } else {
-                    handleKeyPress(e)
-                  }
+                  inputValue.trim() === ''
+                    ? handleValidation(invalidMessage.emptiness)
+                    : handleKeyPress(e)
                 }}
                 placeholder={placeholder}
               />
@@ -120,10 +126,7 @@ export default function ModalWindow({
               {poly === 'create' ? (
                 <ModalLittleBox
                   onClick={() => {
-                    insertInputValue(inputValue)
-                    if (inputValue.trim() === '') {
-                      handleValidation('Empty space is not a valid task name')
-                    }
+                    addNewTask(inputValue.trim())
                   }}
                 >
                   <ModalSigns src="doneGreen.svg" />
@@ -163,13 +166,3 @@ export default function ModalWindow({
       )
     : null
 }
-
-// <Wrapper>
-// <div></div>
-// </Wrapper>
-
-// const Wrapper =() => (
-//   <Wrapper>
-//     {children}
-//   </Wrapper>
-// )

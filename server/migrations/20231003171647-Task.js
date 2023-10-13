@@ -5,7 +5,8 @@ module.exports = {
     await queryInterface.createTable('Tasks', {
       name: {
         allowNull: false,
-        type: Sequelize.STRING,
+        unique: true,
+        type: Sequelize.TEXT,
       },
       id: {
         allowNull: false,

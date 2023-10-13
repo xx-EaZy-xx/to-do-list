@@ -26,7 +26,6 @@ export default function Task({
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [placeholder, setPlaceholder] = useState('')
-
   const inputRef = useRef(null)
   function handleValidation(arg) {
     setPlaceholder(arg)
@@ -38,7 +37,6 @@ export default function Task({
   function handlePush(state, setState) {
     setState(!state)
   }
-
   function handleInputFocus() {
     if (inputIsFocused === false) {
       inputRef.current.focus()
@@ -47,7 +45,7 @@ export default function Task({
     if (inputIsFocused === true) {
       inputRef.current.blur()
       setInputIsFocused(false)
-      Api.updateTask({ taskName: inputValue, taskId: task.Id }).then(() =>
+      Api.updateTask({ taskName: inputValue, taskId: task.id }).then(() =>
         handleFetch()
       )
     }

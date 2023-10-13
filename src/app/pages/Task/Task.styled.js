@@ -52,7 +52,7 @@ export const LittleBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: auto 16px auto 0px;
+  margin: auto 20px auto 0px;
 `
 
 export const ButtonBox = styled.button`
@@ -103,6 +103,7 @@ export const LittleBoxLeft = styled(LittleBox)`
   color: rgb(107, 114, 128);
   font-size: 14px;
   margin-right: 0;
+  font-size: 13px;
 `
 
 export const TaskInput = styled.input`

@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.TEXT,
         allowNull: false,
+        unique: true,
         validate: {
           notEmpty: true,
         },

@@ -4,13 +4,17 @@ import { PageContainer, PageButton } from './Pagination.styled'
 export default function Pagination({
   tasksPerPage,
   totalTasks,
-  handlePage,
   page,
+  setPage,
 }) {
   const pageCount = Math.ceil(totalTasks.length / tasksPerPage)
   const pageNumbers = Array.from({ length: pageCount }).map(
     (el, index) => index + 1
   )
+  //Хэндлер пагинации
+  function handlePage(arg) {
+    setPage(arg)
+  }
 
   return (
     <PageContainer>
