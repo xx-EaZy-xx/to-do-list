@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Api } from '../../utils/MainApi'
+import ToDoContainer from '../ToDoContainer/ToDoContainer'
+import Header from '../Header/Header'
+import { Api } from '../../../utils/MainApi'
 import {
-  ToDoContainer,
-  TopContainer,
-  ToDoCell,
-  UserNameCell,
-  CellImage,
   BottomContainer,
   AsideContainer,
   AsideList,
@@ -24,8 +21,9 @@ import ModalWindow from '../ModalWindow/ModalWindow'
 import Pagination from '../Pagination/Pagination'
 
 export default function ToDo() {
-  //Имя пользователя - позже будет приходить с сервера
+  //Данные пользователя
   const [userName] = useState('XxX_Oleg_XxX')
+  const [loggedIn, setLoggedIn] = useState(false)
   //Массив тасок (с начальным пустым значением)
   const [tasks, setTasks] = useState([])
   const [totalTasks, setTotalTasks] = useState(0)
@@ -118,6 +116,7 @@ export default function ToDo() {
   function handleFetch() {
     setTimeToFetch(!timeToFetch)
   }
+
   useEffect(() => {
     Api.getTasks(
       page,
@@ -125,20 +124,17 @@ export default function ToDo() {
       button.vectorStatus,
       button.todayStatus
     ).then((res) => {
-      const { tasks, total } = res.data
-      setTasks(tasks)
-      setTotalTasks(total)
-      //Возврат на предыдущую страницу, если данная страница пуста
-      tasks.length === 0 && page > 1 ? setPage(page - 1) : ''
+      if (res?.data) {
+        const { tasks, total } = res.data
+        setTasks(tasks)
+        setTotalTasks(total)
+        //Возврат на предыдущую страницу, если данная страница пуста
+        tasks.length === 0 && page > 1 ? setPage(page - 1) : ''
+      }
     })
   }, [timeToFetch, page])
   return (
-    <ToDoContainer>
-      <TopContainer>
-        <ToDoCell>To-Do</ToDoCell>
-        <UserNameCell>{userName}</UserNameCell>
-        <CellImage src="profile.svg"></CellImage>
-      </TopContainer>
+    <>
       <BottomContainer>
         <AsideContainer>
           <AsideList>
@@ -273,6 +269,6 @@ export default function ToDo() {
           page={page}
         />
       )}
-    </ToDoContainer>
+    </>
   )
 }

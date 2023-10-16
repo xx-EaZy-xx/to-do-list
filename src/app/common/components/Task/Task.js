@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Api } from '../../utils/MainApi'
+import { Api } from '../../../utils/MainApi'
 import {
   SupremeTaskBox,
   MainTaskBox,
@@ -26,6 +26,7 @@ export default function Task({
   const [inputIsFocused, setInputIsFocused] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [placeholder, setPlaceholder] = useState('')
+  const [valError, setValError] = useState('')
   const inputRef = useRef(null)
   function handleValidation(arg) {
     setPlaceholder(arg)
@@ -37,7 +38,7 @@ export default function Task({
   function handlePush(state, setState) {
     setState(!state)
   }
-  function handleInputFocus() {
+  async function handleInputFocus() {
     if (inputIsFocused === false) {
       inputRef.current.focus()
       setInputIsFocused(true)
@@ -45,12 +46,15 @@ export default function Task({
     if (inputIsFocused === true) {
       inputRef.current.blur()
       setInputIsFocused(false)
-      Api.updateTask({ taskName: inputValue, taskId: task.id }).then(() =>
-        handleFetch()
+      //скажи нет одинаковым названиям тасок
+      await Api.updateTask({ taskName: inputValue, taskId: task.id }).then(
+        (error) => {
+          setValError(+error.message?.slice(-3))
+          handleFetch()
+        }
       )
     }
   }
-
   function handleKeyPress({ key }) {
     if (key === 'Escape') {
       inputRef.current.blur()
@@ -94,13 +98,22 @@ export default function Task({
   }
 
   useEffect(() => {
+    setInputValue(task.name.trim())
+  }, [])
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyPress)
     return () => document.removeEventListener('keydown', handleKeyPress)
   })
-
+  //Валидация инпута внутри таски
   useEffect(() => {
-    setInputValue(task.name.trim())
-  }, [])
+    if (valError === 400) {
+      setInputValue('')
+      setPlaceholder('No repeats!')
+      setInputIsFocused(true)
+      handleFetch()
+      setValError('')
+    }
+  }, [valError, inputIsFocused])
 
   return (
     <SupremeTaskBox>
@@ -126,16 +139,12 @@ export default function Task({
               backgroundColor={inputIsFocused ? 'white' : 'transparent'}
               border={inputIsFocused ? '1px solid blue' : 'none'}
               onFocus={(e) => {
-                if (inputValue.trim() !== '') {
-                  handleInputFocus(e)
-                }
+                inputValue.trim() !== '' ? handleInputFocus(e) : ''
               }}
               onBlur={(e) => {
-                if (inputValue.trim() !== '') {
-                  handleInputFocus(e)
-                } else {
-                  handleValidation('I need a name!')
-                }
+                inputValue.trim() !== ''
+                  ? handleInputFocus(e)
+                  : handleValidation('I need a name!')
               }}
               onChange={(e) => {
                 handleInputChange(e)

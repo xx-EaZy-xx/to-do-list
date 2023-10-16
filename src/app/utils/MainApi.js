@@ -8,7 +8,7 @@ export class MainApi {
 
   async getTasks(page = 1, filter = 'All', sortVector = 'ASC', today = 'any') {
     try {
-      return await axios.get(`${this._url}/tasks/get`, {
+      const tasks = await axios.get(`${this._url}/tasks/get`, {
         params: {
           page,
           filter,
@@ -16,9 +16,13 @@ export class MainApi {
           today,
         },
       })
+      if (tasks) {
+        return tasks
+      } else {
+        return
+      }
     } catch (err) {
-      console.log('Get error:', err.message, err.code)
-      return err
+      console.log('Get error:', err.message, "Tasks aren't found")
     }
   }
 

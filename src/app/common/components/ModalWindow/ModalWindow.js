@@ -40,7 +40,6 @@ export default function ModalWindow({
         const error = await Api.postTask({ name })
         const errorStatus = +error.message?.slice(-3) ?? ''
         setValError(errorStatus)
-        console.log(valError)
         handleFetch()
         if (errorStatus === 409) {
           setPlaceHolder(invalidMessage.sameness)
@@ -58,7 +57,7 @@ export default function ModalWindow({
   //Валидация единственного инпута
   function handleValidation(arg) {
     setPlaceHolder(arg)
-    return
+    setInputValue('')
   }
   //Клавиатурные действия
   function handleOverlayClose(e) {
@@ -90,6 +89,10 @@ export default function ModalWindow({
       trashButton.current.focus()
     }
   }, [isOpen, setIsOpen])
+  useEffect(() => {
+    setValError('')
+    setPlaceHolder('Enter text...')
+  }, [isOpen])
 
   return isOpen
     ? createPortal(
@@ -113,7 +116,8 @@ export default function ModalWindow({
                 onKeyDown={(e) => {
                   inputValue.trim() === ''
                     ? handleValidation(invalidMessage.emptiness)
-                    : handleKeyPress(e)
+                    : ''
+                  handleKeyPress(e)
                 }}
                 placeholder={placeholder}
               />
@@ -126,7 +130,9 @@ export default function ModalWindow({
               {poly === 'create' ? (
                 <ModalLittleBox
                   onClick={() => {
-                    addNewTask(inputValue.trim())
+                    inputValue.trim() === ''
+                      ? handleValidation(invalidMessage.emptiness)
+                      : addNewTask(inputValue.trim())
                   }}
                 >
                   <ModalSigns src="doneGreen.svg" />
