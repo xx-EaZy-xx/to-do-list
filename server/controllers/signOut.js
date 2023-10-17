@@ -3,7 +3,7 @@ const signOut = async (req, res, next) => {
     await res.clearCookie('jwt')
     return res.send({ message: 'Токен удален из кукиса' })
   } catch (err) {
-    console.error(err)
+    console.log(err)
     return next(err)
   }
 }

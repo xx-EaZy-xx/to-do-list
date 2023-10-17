@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
-import { register } from '../services/UserApi'
+import { apiRegister, apiLogin } from '../services/UserApi'
 import {
   AuthContainer,
   AuthInnerContainer,
@@ -44,10 +44,25 @@ export default function Authorization() {
     setAuthState(!authState)
   }
 
-  function handleRegister() {
-    console.log('Register!', authInput)
-    const { login, email, password, secondPassword } = authInput
-    // register(login, email, password, secondPassword)
+  async function handleRegister() {
+    try {
+      const { login, email, password, secondPassword } = authInput
+      await apiRegister(login, email, password, secondPassword)
+      setLoggedIn(true)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+
+  async function handleLogin() {
+    try {
+      const { login, password } = authInput
+      const token = await apiLogin(login, password)
+      localStorage.setItem('jwt', token.data)
+      setLoggedIn(true)
+    } catch (err) {
+      console.log(err.message)
+    }
   }
 
   //Редирект по факту авторизации
@@ -61,6 +76,7 @@ export default function Authorization() {
       <AuthInnerContainer>
         <AuthHeader>{authState ? 'Log in' : 'Sign up'}</AuthHeader>
         <AuthInput
+          type="text"
           id="login"
           onChange={handleInputChange}
           placeholder="Enter login..."
@@ -69,12 +85,14 @@ export default function Authorization() {
           ''
         ) : (
           <AuthInput
+            type="text"
             id="email"
             onChange={handleInputChange}
             placeholder="Enter email..."
           />
         )}
         <AuthInput
+          type="password"
           id="password"
           onChange={handleInputChange}
           placeholder="Enter password..."
@@ -83,6 +101,7 @@ export default function Authorization() {
           ''
         ) : (
           <AuthInput
+            type="password"
             id="secondPassword"
             onChange={handleInputChange}
             placeholder="Enter password..."
@@ -93,7 +112,7 @@ export default function Authorization() {
         </AuthSignUpButton>
         <AuthSignContainer>
           <AuthSignInnerContainer
-            onClick={authState ? handleLoggedInState : handleRegister}
+            onClick={authState ? handleLogin : handleRegister}
           >
             <AuthSignImage src="authArrow.svg" />
             <AuthSignText>{authState ? 'Sign in' : 'Sign up'}</AuthSignText>

@@ -8,16 +8,17 @@ const maxSymbols = 100
 //Валидация пользователей
 const signUpValidation = celebrate({
   body: Joi.object().keys({
+    login: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().required().min(2).max(30),
+    password: Joi.string().required().min(2).max(30),
+    secondPassword: Joi.string().required().min(2).max(30),
   }),
 })
 
 const signInValidation = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+    login: Joi.string().required(),
+    password: Joi.string().required().min(2).max(30),
   }),
 })
 

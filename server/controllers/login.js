@@ -2,28 +2,23 @@ const { User } = require('../models')
 const createError = require('http-errors')
 const bcrypt = require('bcryptjs')
 const jsonwebtoken = require('jsonwebtoken')
+const { JWT_SECRET } = require('../envconfig')
 
 const login = async (req, res, next) => {
   try {
+    console.log(req.body)
     const user = await User.findAll({
-      where: { email: req.body.email, password: req.body.password },
+      where: { login: req.body.login },
     })
-    const matched = await bcrypt.compare(password, user.password)
+    const matched = await bcrypt.compare(req.body.password, user[0].password)
     if (!matched) {
       return next(createError(401, 'Неправильный пароль'))
     }
-
-    const token = jsonwebtoken.sign(
-      { id: user.id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-      { expiresIn: '7d' }
-    )
-    return res
-      .cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      })
-      .send({ message: 'Токен сохранен в httpOnly кукис' })
+    //здесь что-то не так
+    const token = jsonwebtoken.sign({ id: user[0].id }, JWT_SECRET, {
+      expiresIn: '7d',
+    })
+    return res.status(200).send(token)
   } catch (err) {
     console.log(err)
     return next(err)

@@ -1,46 +1,38 @@
 import axios from 'axios'
 const url = process.env.BASE_URL
+const instance = axios.create({
+  withCredentials: true,
+})
 
-async function checkToken() {
+async function apiCheckToken() {
   try {
-    return await axios.get(`${url}/tasks/get`, {
-      withCredentials: true,
-    })
+    return await instance.get(`${url}/users/get`)
   } catch (err) {
     return err
   }
 }
-async function register(name, email, password) {
-  return await axios.post(`${url}/register`, {
-    withCredentials: true,
-    body: JSON.stringify({
-      name,
-      email,
-      password,
-    }),
+async function apiRegister(name, email, password, secondPassword) {
+  return await instance.post(`${url}/users/register`, {
+    name,
+    email,
+    password,
+    secondPassword,
   })
 }
 
-async function login(email, password) {
-  return await axios.post(`${url}/login`, {
-    withCredentials: true,
-    body: JSON.stringify({
-      email,
-      password,
-    }),
+async function apiLogin(login, password) {
+  return await instance.post(`${url}/users/login`, {
+    login: login,
+    password: password,
   })
 }
 
-async function getUserData() {
-  return await axios.get(`${url}/users/me`, {
-    withCredentials: true,
-  })
+async function apiGetUserData() {
+  return await instance.get(`${url}/users/me`)
 }
 
-async function signOut() {
-  return await axios.post(`${url}/signout`, {
-    withCredentials: true,
-  })
+async function apiSignOut() {
+  return await instance.post(`${url}/users/signout`)
 }
 
-export { checkToken, register, login, getUserData, signOut }
+export { apiCheckToken, apiRegister, apiLogin, apiGetUserData, apiSignOut }

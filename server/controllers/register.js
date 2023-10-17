@@ -1,27 +1,27 @@
 const { User } = require('../models')
 const bcrypt = require('bcryptjs')
+const createError = require('http-errors')
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body
-    const hash = await bcrypt.hash(password, 10)
-    const user = await User.create({
-      name,
-      email,
-      password: hash,
-    })
-    return res.status(201).json({
-      name: user.name,
-      email: user.email,
-      id: user.id,
-    })
-  } catch (err) {
-    if (err.code === 11000) {
-      return next(
-        new EmailExistsError('Пользователь с таким email уже существует')
-      )
+    const { login, email, password, secondPassword } = req.body
+    if (password === secondPassword) {
+      const hash = await bcrypt.hash(password, 10)
+      const user = await User.create({
+        login,
+        email,
+        password: hash,
+      })
+      return res.status(201).json({
+        login: user.login,
+        email: user.email,
+        id: user.id,
+      })
+    } else {
+      throw createError(400, 'Пароли не совпадают')
     }
-    console.error(err)
+  } catch (err) {
+    console.log(err)
     return next(err)
   }
 }
