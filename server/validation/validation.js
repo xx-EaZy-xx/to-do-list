@@ -5,6 +5,7 @@ const uuidPattern =
 
 const maxSymbols = 100
 
+//Валидация пользователей
 const signUpValidation = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -20,6 +21,7 @@ const signInValidation = celebrate({
   }),
 })
 
+//Валидация задач
 const postTaskValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().max(maxSymbols),

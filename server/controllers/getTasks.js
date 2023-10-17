@@ -28,17 +28,13 @@ const getAllTasks = async (req, res, next) => {
         ],
       ],
     }
-    const tasks = await Task.findAll({
+    const { count, rows } = await Task.findAndCountAll({
       where,
       order,
       offset,
       limit,
     })
-    const total = await Task.findAll({
-      where,
-      order,
-    })
-    return res.status(200).json({ tasks, total })
+    return res.status(200).json({ count, rows })
   } catch (err) {
     console.log(err)
     return next(createError(404, 'Задачи не были найдены'))

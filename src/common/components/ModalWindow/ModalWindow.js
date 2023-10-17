@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Api } from '@/app/utils/MainApi'
+import { postTask } from '@/app/services/TaskApi'
 import {
   ModalBackground,
   ModalContainer,
@@ -37,7 +37,7 @@ export default function ModalWindow({
   async function addNewTask(name) {
     try {
       if (inputValue.trim() !== '') {
-        const error = await Api.postTask({ name })
+        const error = await postTask({ name })
         const errorStatus = +error.message?.slice(-3) ?? ''
         setValError(errorStatus)
         handleFetch()
@@ -110,9 +110,7 @@ export default function ModalWindow({
                 invalid={valError === 409 ? true : false}
                 ref={modalInput}
                 value={inputValue}
-                onChange={(e) => {
-                  handleInputChange(e)
-                }}
+                onChange={(e) => handleInputChange(e)}
                 onKeyDown={(e) => {
                   inputValue.trim() === ''
                     ? handleValidation(invalidMessage.emptiness)

@@ -7,7 +7,7 @@ export default function Pagination({
   page,
   setPage,
 }) {
-  const pageCount = Math.ceil(totalTasks.length / tasksPerPage)
+  const pageCount = Math.ceil(totalTasks / tasksPerPage)
   const pageNumbers = Array.from({ length: pageCount }).map(
     (el, index) => index + 1
   )

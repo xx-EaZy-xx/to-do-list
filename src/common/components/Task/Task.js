@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Api } from '../../../utils/MainApi'
+import { updateTask } from '@/app/services/TaskApi'
 import {
   SupremeTaskBox,
   MainTaskBox,
@@ -28,41 +28,48 @@ export default function Task({
   const [placeholder, setPlaceholder] = useState('')
   const [valError, setValError] = useState('')
   const inputRef = useRef(null)
-  function handleValidation(arg) {
-    setPlaceholder(arg)
-    return
-  }
+  const weekDays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ]
+
   function handleInputChange(e) {
     setInputValue(e.target.value)
   }
-  function handlePush(state, setState) {
-    setState(!state)
+  function handleTaskStatus() {
+    setTaskStatus(!taskStatus)
   }
-  async function handleInputFocus() {
-    if (inputIsFocused === false) {
-      inputRef.current.focus()
+  function handlePointsPushed() {
+    setArePointsPushed(!arePointsPushed)
+  }
+
+  async function handleInputFocus(e) {
+    if (e.type === 'focus') {
       setInputIsFocused(true)
-    }
-    if (inputIsFocused === true) {
-      inputRef.current.blur()
+    } else if (e.type === 'blur') {
+      inputValue.trim() === '' ? setPlaceholder('AAA') : setPlaceholder('')
       setInputIsFocused(false)
       //скажи нет одинаковым названиям тасок
-      await Api.updateTask({ taskName: inputValue, taskId: task.id }).then(
-        (error) => {
-          setValError(+error.message?.slice(-3))
-          handleFetch()
-        }
-      )
+      if (inputValue.trim() !== '') {
+        const updatedTask = await updateTask({
+          taskName: inputValue,
+          taskId: task.id,
+        })
+        setValError(+updatedTask?.message?.slice(-3))
+        handleFetch()
+      } else {
+        setPlaceholder('Task should be named')
+        setInputIsFocused(true)
+      }
     }
   }
   function handleKeyPress({ key }) {
-    if (key === 'Escape') {
-      inputRef.current.blur()
-      setInputIsFocused(false)
-      return
-    }
-    if (key === 'Enter') {
-      inputRef.current.blur()
+    if (key === 'Escape' || key === 'Enter') {
       setInputIsFocused(false)
       return
     }
@@ -74,23 +81,11 @@ export default function Task({
     const minutes = task.date.slice(12, 17).replaceAll('.', ':')
     const dayOfTheWeek = new Date(year, month, day).getDay()
     function getDayOfTheWeek(day) {
-      if (day === new Date().getDay()) {
-        return 'Today'
-      } else if (day === 0) {
-        return 'Sunday'
-      } else if (day === 1) {
-        return 'Monday'
-      } else if (day === 2) {
-        return 'Tuesday'
-      } else if (day === 3) {
-        return 'Wednesday'
-      } else if (day === 4) {
-        return 'Thursday'
-      } else if (day === 5) {
-        return 'Friday'
-      } else if (day === 6) {
-        return 'Saturday'
-      }
+      return day === new Date().getDay()
+        ? 'Today'
+        : weekDays.filter((el, i) => {
+            return day === i
+          })[0]
     }
     return `${getDayOfTheWeek(dayOfTheWeek)} on ${task.date
       .slice(0, 10)
@@ -121,8 +116,8 @@ export default function Task({
         <ButtonBox>
           <TaskImage
             onClick={() => {
-              handlePush(taskStatus, setTaskStatus)
-              Api.updateTask({ taskId: task.id })
+              handleTaskStatus()
+              updateTask({ taskId: task.id })
               handleFetch()
             }}
             src={taskStatus ? 'done.svg' : 'doneGrey.svg'}
@@ -139,12 +134,10 @@ export default function Task({
               backgroundColor={inputIsFocused ? 'white' : 'transparent'}
               border={inputIsFocused ? '1px solid blue' : 'none'}
               onFocus={(e) => {
-                inputValue.trim() !== '' ? handleInputFocus(e) : ''
+                handleInputFocus(e)
               }}
               onBlur={(e) => {
-                inputValue.trim() !== ''
-                  ? handleInputFocus(e)
-                  : handleValidation('I need a name!')
+                handleInputFocus(e)
               }}
               onChange={(e) => {
                 handleInputChange(e)
@@ -155,7 +148,7 @@ export default function Task({
             {handleTaskDate()}
             <ButtonBox
               onClick={() => {
-                handlePush(arePointsPushed, setArePointsPushed)
+                handlePointsPushed()
               }}
             >
               <TaskImageLeft

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ToDoContainer from '../ToDoContainer/ToDoContainer'
-import Header from '../Header/Header'
-import { Api } from '../../../utils/MainApi'
+import { getTasks, eraseTask } from '../../../app/services/TaskApi'
 import {
   BottomContainer,
   AsideContainer,
@@ -58,7 +56,7 @@ export default function ToDo() {
   }
   function toggleSortToday() {
     if (button.todayStatus === 'today') {
-      Math.ceil(totalTasks.length / tasksPerPage)
+      Math.ceil(totalTasks / tasksPerPage)
       handleButtonPush({ todayStatus: 'any' })
     } else if (button.todayStatus === 'any') {
       handleButtonPush({ todayStatus: 'today' })
@@ -76,11 +74,9 @@ export default function ToDo() {
   function handleModalCreateOpen(arg) {
     setModalOpened({ creation: arg ?? !modalOpened.creation })
   }
-
   function handleModalDeleteOpen(arg) {
     setModalOpened({ deletion: arg ?? !modalOpened.deletion })
   }
-
   function returnModal(modal, taskId) {
     return modal === 'create' ? (
       <ModalWindow
@@ -103,14 +99,14 @@ export default function ToDo() {
       />
     )
   }
-
   //Удаление задач
-  function deleteTask(taskId) {
-    Api.deleteTask(taskId).then(() => {
-      const puredArr = tasks.filter((el) => el.key !== taskId)
-      setTasks(puredArr)
+  async function deleteTask(taskId) {
+    try {
+      await eraseTask(taskId)
       handleFetch()
-    })
+    } catch (err) {
+      console.log(err)
+    }
   }
   //Запросы с сервера
   function handleFetch() {
@@ -118,20 +114,26 @@ export default function ToDo() {
   }
 
   useEffect(() => {
-    Api.getTasks(
-      page,
-      button.drop,
-      button.vectorStatus,
-      button.todayStatus
-    ).then((res) => {
-      if (res?.data) {
-        const { tasks, total } = res.data
-        setTasks(tasks)
-        setTotalTasks(total)
-        //Возврат на предыдущую страницу, если данная страница пуста
-        tasks.length === 0 && page > 1 ? setPage(page - 1) : ''
+    //запрос к api
+    ;(async () => {
+      try {
+        const fetchedTasks = await getTasks(
+          page,
+          button.drop,
+          button.vectorStatus,
+          button.todayStatus
+        )
+        if (fetchedTasks?.data) {
+          const { count, rows } = fetchedTasks.data
+          setTasks(rows)
+          setTotalTasks(count)
+          //Возврат на предыдущую страницу, если данная страница пуста
+          rows.length === 0 && page > 1 ? setPage(page - 1) : ''
+        }
+      } catch (err) {
+        console.log(err)
       }
-    })
+    })()
   }, [timeToFetch, page])
   return (
     <>
@@ -259,7 +261,7 @@ export default function ToDo() {
         </BottomBlockContainer>
       </BottomContainer>
       {returnModal('create')}
-      {totalTasks.length <= tasksPerPage ? (
+      {totalTasks <= tasksPerPage ? (
         ''
       ) : (
         <Pagination

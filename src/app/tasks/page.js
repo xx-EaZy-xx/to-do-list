@@ -1,17 +1,16 @@
 'use client'
-import React from 'react'
-import { PrimeContainer, Container } from '../tasks/page.styled'
+import { PrimeContainer, Container } from './page.styled'
 import Title from '../../common/components/Title/Title'
 import Header from '../../common/components/Header/Header'
-import Authorization from './Authorization'
+import ToDo from '../../common/components/ToDo/ToDo'
 
-export default function Page() {
+export default function Home() {
   return (
     <PrimeContainer>
       <Title />
       <Container>
         <Header />
-        <Authorization />
+        <ToDo />
       </Container>
     </PrimeContainer>
   )
