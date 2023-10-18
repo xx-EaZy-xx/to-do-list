@@ -9,6 +9,9 @@ const login = async (req, res, next) => {
     const user = await User.findAll({
       where: { login: req.body.login },
     })
+    if (!user) {
+      return next(createError(400, 'Пользователя с таким именем не существует'))
+    }
     const userId = user[0].userId
     const userName = user[0].login
     const matched = await bcrypt.compare(req.body.password, user[0].password)

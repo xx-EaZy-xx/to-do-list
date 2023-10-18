@@ -11,6 +11,7 @@ import {
   AuthSignInnerContainer,
   AuthSignImage,
   AuthSignText,
+  AuthValidationMessage,
 } from './Authorization.styled'
 
 export default function Authorization() {
@@ -22,6 +23,7 @@ export default function Authorization() {
     password: '',
     secondPassword: '',
   })
+  const [valMessage, setValMessage] = useState('')
   //Обработчик инпутов
   function handleInputChange(e) {
     setAuthInput({
@@ -36,6 +38,10 @@ export default function Authorization() {
     })
   }
 
+  function handleKeyDown() {
+    authState ? handleLogin() : handleRegister()
+  }
+
   //Тогглер login/register
   function toggleAuthState() {
     setAuthState(!authState)
@@ -45,9 +51,10 @@ export default function Authorization() {
     try {
       const { login, email, password, secondPassword } = authInput
       const reg = await apiRegister(login, email, password, secondPassword)
-      reg ? handleLogin() : '' //здесь должна быть валидация регистрации
+      reg ? handleLogin() : ''
     } catch (err) {
       console.log(err.message)
+      setValMessage("User with such credentials can't be created!")
     }
   }
 
@@ -61,6 +68,7 @@ export default function Authorization() {
       setLoggedIn(true)
     } catch (err) {
       console.log(err.message)
+      setValMessage('Invalid user credentials!')
     }
   }
 
@@ -70,17 +78,21 @@ export default function Authorization() {
       redirect('/tasks', 'push')
     }
   }, [loggedIn])
+  useEffect(() => {
+    setValMessage('')
+  }, [authState])
   return (
     <AuthContainer>
       <AuthInnerContainer>
         <AuthHeader>{authState ? 'Log in' : 'Sign up'}</AuthHeader>
+        <AuthValidationMessage>{valMessage}</AuthValidationMessage>
         <AuthInput
           type="text"
           id="login"
           onChange={handleInputChange}
           placeholder="Enter login..."
           onKeyDown={(e) => {
-            e.code === 'Enter' ? handleLogin() : ''
+            e.code === 'Enter' ? handleKeyDown() : ''
           }}
         />
         {authState ? (
@@ -91,6 +103,9 @@ export default function Authorization() {
             id="email"
             onChange={handleInputChange}
             placeholder="Enter email..."
+            onKeyDown={(e) => {
+              e.code === 'Enter' ? handleKeyDown() : ''
+            }}
           />
         )}
         <AuthInput
@@ -99,7 +114,7 @@ export default function Authorization() {
           onChange={handleInputChange}
           placeholder="Enter password..."
           onKeyDown={(e) => {
-            e.code === 'Enter' ? handleLogin() : ''
+            e.code === 'Enter' ? handleKeyDown() : ''
           }}
         />
         {authState ? (
@@ -110,6 +125,9 @@ export default function Authorization() {
             id="secondPassword"
             onChange={handleInputChange}
             placeholder="Enter password..."
+            onKeyDown={(e) => {
+              e.code === 'Enter' ? handleKeyDown() : ''
+            }}
           />
         )}
         <AuthSignUpButton onClick={toggleAuthState}>

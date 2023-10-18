@@ -110,3 +110,10 @@ export const AuthSignText = styled.p`
   margin: 0 0 0 4px;
   align-self: center;
 `
+
+export const AuthValidationMessage = styled.p`
+  margin: 10px 0 0 0;
+  align-self: center;
+  color: red;
+  font-size: 14px;
+`
