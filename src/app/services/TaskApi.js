@@ -1,6 +1,13 @@
 import axios from 'axios'
 const url = process.env.BASE_URL
 
+//Перехватчик запросов - добавляет jwt токен в каждый запрос
+axios.interceptors.request.use((request) => {
+  const token = localStorage.getItem('jwt')
+  if (token) request.headers.Authorization = `Bearer ${token}`
+  return request
+})
+
 async function getTasks(
   page = 1,
   filter = 'All',
@@ -58,6 +65,7 @@ async function eraseTask(taskId) {
 }
 
 async function updateTask({ taskName, taskId }) {
+  const jwt = localStorage.getItem('jwt')
   try {
     if (taskName) {
       return await axios.patch(`${url}/tasks/patch`, {
