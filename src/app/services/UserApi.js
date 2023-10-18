@@ -1,18 +1,20 @@
 import axios from 'axios'
 const url = process.env.BASE_URL
-const instance = axios.create({
-  withCredentials: true,
-})
 
 async function apiCheckToken() {
   try {
-    return await instance.get(`${url}/users/get`)
+    const userId = localStorage.getItem('userId')
+    return await axios.get(`${url}/users/me`, {
+      params: {
+        userId: userId,
+      },
+    })
   } catch (err) {
     return err
   }
 }
 async function apiRegister(login, email, password, secondPassword) {
-  return await instance.post(`${url}/users/register`, {
+  return await axios.post(`${url}/users/register`, {
     login,
     email,
     password,
@@ -21,18 +23,18 @@ async function apiRegister(login, email, password, secondPassword) {
 }
 
 async function apiLogin(login, password) {
-  return await instance.post(`${url}/users/login`, {
+  return await axios.post(`${url}/users/login`, {
     login: login,
     password: password,
   })
 }
 
 async function apiGetUserData() {
-  return await instance.get(`${url}/users/me`)
+  return await axios.get(`${url}/users/me`)
 }
 
 async function apiSignOut() {
-  return await instance.post(`${url}/users/signout`)
+  return await axios.post(`${url}/users/signout`)
 }
 
 export { apiCheckToken, apiRegister, apiLogin, apiGetUserData, apiSignOut }

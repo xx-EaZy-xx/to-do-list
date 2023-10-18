@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getTasks, eraseTask } from '../../../app/services/TaskApi'
+import { redirect } from 'next/navigation'
 import {
   BottomContainer,
   AsideContainer,
@@ -19,9 +20,6 @@ import ModalWindow from '../ModalWindow/ModalWindow'
 import Pagination from '../Pagination/Pagination'
 
 export default function ToDo() {
-  //Данные пользователя
-  const [userName] = useState('XxX_Oleg_XxX')
-  const [loggedIn, setLoggedIn] = useState(false)
   //Массив тасок (с начальным пустым значением)
   const [tasks, setTasks] = useState([])
   const [totalTasks, setTotalTasks] = useState(0)
@@ -135,6 +133,13 @@ export default function ToDo() {
       }
     })()
   }, [timeToFetch, page])
+
+  useEffect(() => {
+    //Пытаюсь сделать защищённый роут
+    const user = localStorage.getItem('userId', 'jwt')
+    const jwt = localStorage.getItem('jwt')
+    if (!(user || jwt)) redirect('/auth', 'push')
+  }, [])
   return (
     <>
       <BottomContainer>

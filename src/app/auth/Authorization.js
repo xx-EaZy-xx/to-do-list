@@ -36,11 +36,8 @@ export default function Authorization() {
     })
   }
 
-  //Простые хэндлеры
-  function handleLoggedInState() {
-    setLoggedIn(!loggedIn)
-  }
-  function handleAuthState() {
+  //Тогглер login/register
+  function toggleAuthState() {
     setAuthState(!authState)
   }
 
@@ -60,6 +57,7 @@ export default function Authorization() {
       const auth = await apiLogin(login, password)
       localStorage.setItem('jwt', auth.data.token)
       localStorage.setItem('userId', auth.data.userId)
+      localStorage.setItem('userName', auth.data.userName)
       setLoggedIn(true)
     } catch (err) {
       console.log(err.message)
@@ -114,7 +112,7 @@ export default function Authorization() {
             placeholder="Enter password..."
           />
         )}
-        <AuthSignUpButton onClick={handleAuthState}>
+        <AuthSignUpButton onClick={toggleAuthState}>
           {authState ? 'Sign up' : 'Sign in'}
         </AuthSignUpButton>
         <AuthSignContainer>

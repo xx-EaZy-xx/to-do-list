@@ -34,4 +34,10 @@ export const CellImage = styled.img`
   width: 16px;
   height: 16px;
   contain: cover;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `
