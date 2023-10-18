@@ -11,9 +11,9 @@ async function apiCheckToken() {
     return err
   }
 }
-async function apiRegister(name, email, password, secondPassword) {
+async function apiRegister(login, email, password, secondPassword) {
   return await instance.post(`${url}/users/register`, {
-    name,
+    login,
     email,
     password,
     secondPassword,

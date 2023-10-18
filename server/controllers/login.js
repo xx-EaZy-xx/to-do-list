@@ -10,6 +10,7 @@ const login = async (req, res, next) => {
     const user = await User.findAll({
       where: { login: req.body.login },
     })
+    const userId = user[0].userId
     const matched = await bcrypt.compare(req.body.password, user[0].password)
     if (!matched) {
       return next(createError(401, 'Неправильный пароль'))
@@ -18,7 +19,7 @@ const login = async (req, res, next) => {
     const token = jsonwebtoken.sign({ id: user[0].id }, JWT_SECRET, {
       expiresIn: '7d',
     })
-    return res.status(200).send(token)
+    return res.status(200).send({ token, userId })
   } catch (err) {
     console.log(err)
     return next(err)

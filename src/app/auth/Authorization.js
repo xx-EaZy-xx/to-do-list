@@ -47,8 +47,8 @@ export default function Authorization() {
   async function handleRegister() {
     try {
       const { login, email, password, secondPassword } = authInput
-      await apiRegister(login, email, password, secondPassword)
-      setLoggedIn(true)
+      const reg = await apiRegister(login, email, password, secondPassword)
+      reg ? handleLogin() : '' //здесь должна быть валидация регистрации
     } catch (err) {
       console.log(err.message)
     }
@@ -57,8 +57,9 @@ export default function Authorization() {
   async function handleLogin() {
     try {
       const { login, password } = authInput
-      const token = await apiLogin(login, password)
-      localStorage.setItem('jwt', token.data)
+      const auth = await apiLogin(login, password)
+      localStorage.setItem('jwt', auth.data.token)
+      localStorage.setItem('userId', auth.data.userId)
       setLoggedIn(true)
     } catch (err) {
       console.log(err.message)
@@ -80,6 +81,9 @@ export default function Authorization() {
           id="login"
           onChange={handleInputChange}
           placeholder="Enter login..."
+          onKeyDown={(e) => {
+            e.code === 'Enter' ? handleLogin() : ''
+          }}
         />
         {authState ? (
           ''
@@ -96,6 +100,9 @@ export default function Authorization() {
           id="password"
           onChange={handleInputChange}
           placeholder="Enter password..."
+          onKeyDown={(e) => {
+            e.code === 'Enter' ? handleLogin() : ''
+          }}
         />
         {authState ? (
           ''

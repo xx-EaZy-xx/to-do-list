@@ -5,7 +5,8 @@ async function getTasks(
   page = 1,
   filter = 'All',
   sortVector = 'ASC',
-  today = 'any'
+  today = 'any',
+  userId = localStorage.getItem('userId')
 ) {
   try {
     const tasks = await axios.get(`${url}/tasks/get`, {
@@ -14,6 +15,7 @@ async function getTasks(
         filter,
         sortVector,
         today,
+        userId,
       },
     })
     if (tasks) {
@@ -30,12 +32,14 @@ async function postTask({
   name = '<Nameless task>',
   date = new Date().toLocaleString(),
   partialDate = new Date().toLocaleString().slice(0, 10),
+  userId = localStorage.getItem('userId'),
 }) {
   try {
     return await axios.post(`${url}/tasks/post`, {
       name,
       date,
       partialDate,
+      userId,
     })
   } catch (err) {
     return err

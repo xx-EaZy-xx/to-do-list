@@ -7,9 +7,10 @@ const getAllTasks = async (req, res, next) => {
     const pageSize = 7
     const offset = (req.query.page - 1) * pageSize
     const limit = pageSize
-    const { filter, sortVector, today } = req.query
+    const { filter, sortVector, today, userId } = req.query
     const { where, order } = {
       where: {
+        creatorId: userId,
         isDone:
           filter === 'All'
             ? [true, false]

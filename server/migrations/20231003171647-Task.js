@@ -14,6 +14,9 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
+      creatorId: {
+        type: Sequelize.STRING,
+      },
       isDone: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

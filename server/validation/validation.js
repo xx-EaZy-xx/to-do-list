@@ -28,6 +28,7 @@ const postTaskValidation = celebrate({
     name: Joi.string().required().max(maxSymbols),
     date: Joi.string().required().max(maxSymbols),
     partialDate: Joi.string().required().max(maxSymbols),
+    userId: Joi.string().required(),
   }),
 })
 
