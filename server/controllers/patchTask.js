@@ -8,6 +8,9 @@ const patchTask = async (req, res, next) => {
         id: req.body.id,
       },
     })
+    if (!taskById) {
+      return res.status(404).send('No such task')
+    }
     await Task.update(
       req.body.name
         ? {
@@ -23,7 +26,8 @@ const patchTask = async (req, res, next) => {
     return res.status(200).send(`task ${req.body.name} was updated`)
   } catch (err) {
     console.log(err)
-    return next(createError(400, 'Передан некорректный идентификатор задачи'))
+
+    return next(createError(err))
   }
 }
 module.exports = { patchTask }

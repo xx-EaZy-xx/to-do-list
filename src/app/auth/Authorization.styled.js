@@ -34,6 +34,7 @@ export const AuthHeader = styled.h3`
   line-height: 23px;
   text-align: center;
   margin: 18px 0 0 0;
+  z-index: 1;
 `
 
 export const AuthInput = styled.input`
@@ -116,4 +117,5 @@ export const AuthValidationMessage = styled.p`
   align-self: center;
   color: red;
   font-size: 14px;
+  line-height: 18.75px;
 `

@@ -19,7 +19,7 @@ const register = async (req, res, next) => {
       })
     } else {
       throw createError(400, 'Пароли не совпадают')
-    }
+    } //Перекинуть на фронт
   } catch (err) {
     console.log(err)
     return next(err)
